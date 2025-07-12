@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বাহ্যিক ব্যয় যোগ করুন</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .navbar { margin-bottom: 20px; }
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
+        .datetime-local-container { position: relative; }
+        .datetime-local-container input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">ম্যানেজমেন্ট</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="addMember.html">সদস্য যোগ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="addReceipt.html">অর্থ গ্রহণ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="addPayment.html">অর্থ প্রদান</a></li>
+                    <li class="nav-item"><a class="nav-link" href="addExternalIncome.html">বাহ্যিক আয়</a></li>
+                    <li class="nav-item active"><a class="nav-link active" href="addExternalExpenses.html">বাহ্যিক ব্যয়</a></li>
+                    <li class="nav-item"><a class="nav-link" href="DPS.html">ডিপিএস</a></li>
+          																								<li class="nav-item"><a class="nav-link" href="FixedDeposit.html">স্থায়ী আমানত</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="text-center my-4">বাহ্যিক ব্যয় যোগ করুন</h2>
+        <form id="expenseForm" novalidate>
+            <div class="mb-3">
+                <label for="memberNumber" class="form-label">সদস্য নং (যদি প্রদানকারী সদস্য হয়) :</label>
+                <input type="text" name="memberNumber" id="memberNumber" class="form-control" list="memberNumbers" autocomplete="off">
+            </div>
+            <div class="mb-3">
+                <label for="memberName" class="form-label">সদস্যের নাম (যদি প্রদানকারী সদস্য হয়) :</label>
+                <input type="text" name="memberName" id="memberName" class="form-control" list="memberNames" autocomplete="off">
+            </div>
+            <div class="mb-3 datetime-local-container">
+                <label for="dateTimeInput" class="form-label">খরচের তারিখ ও সময় :</label>
+                <input type="datetime-local" id="dateTimeInput" class="form-control" required>
+                <input type="hidden" name="dateTime" id="dateTime">
+            </div>
+            <div class="mb-3">
+                <label for="type" class="form-label">ব্যয়ের/খরচের ধরন :</label>
+                <input type="text" name="type" id="type" class="form-control" list="expenseTypes" required>
+                <datalist id="expenseTypes">
+                    <option value="স্টেশনারী খরচ">
+                    <option value="মিটিং খরচ">
+                    <option value="যাতায়াত খরচ">
+                    <option value="বেতন">
+                    <option value="অফিস ভাড়া">
+                    <option value="বিদ্যুৎ বিল">
+                    <option value="সম্মানী ভাতা">
+                    <option value="অফিস আপ্যায়ন">
+                    <option value="রক্ষণাবেক্ষণ">
+                    <option value="আসবাবপত্র">
+                </datalist>
+            </div>
+            <div class="mb-3">
+                <label for="amount" class="form-label">পরিমাণ :</label>
+                <input type="number" name="amount" id="amount" class="form-control" step="0.01" required>
+            </div>
+            <div class="mb-3">
+                <label for="payerName" class="form-label">প্রদানকারীর নাম (কর্মচারী) :</label>
+                <input type="text" name="payerName" id="payerName" class="form-control" list="employeeNames" required autocomplete="off">
+                <datalist id="employeeNames"></datalist>
+            </div>
+            <div class="mb-3">
+                <label for="collectorName" class="form-label">আদায়কারীর নাম :</label>
+                <input type="text" name="collectorName" id="collectorName" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">লেনদেনের বিবরণ :</label>
+                <textarea name="description" id="description" class="form-control"></textarea>
+            </div>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#secretCodeModal">জমা দিন</button>
+        </form>
+        <p id="errorMessage" class="error" style="display: none;"></p>
+        <p id="successMessage" class="success" style="display: none;"></p>
+
+        <datalist id="memberNumbers"></datalist>
+        <datalist id="memberNames"></datalist>
+    </div>
+
+    <div class="modal fade" id="secretCodeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">গোপন কোড দিন</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="password" id="secretCode" class="form-control" placeholder="গোপন কোড">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">বাতিল</button>
+                    <button type="button" class="btn btn-primary" id="confirmButton">কনফার্ম</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container">
+        <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body"></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="api.js"></script>
+    <script>
+        $(document).ready(function() {
+  fetchSuggestions();
+  initializeDateTimePicker();
+});
+
+function initializeDateTimePicker() {
+    const dateTimeInput = document.getElementById('dateTimeInput');
+    const hiddenDateTime = document.getElementById('dateTime');
+    
+    // ডিফল্টভাবে ইনপুট খালি রাখা
+    dateTimeInput.value = '';
+
+    // তারিখ ও সময় নির্বাচনের পর ফর্ম্যাট করা
+    dateTimeInput.addEventListener('change', function() {
+        const date = new Date(this.value);
+        if (isNaN(date)) {
+            hiddenDateTime.value = '';
+            return;
+        }
+        const formatted = date.getFullYear() + '-' +
+                         String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                         String(date.getDate()).padStart(2, '0') + ' ' +
+                         String(date.getHours()).padStart(2, '0') + ':' +
+                         String(date.getMinutes()).padStart(2, '0') + ':00';
+        hiddenDateTime.value = formatted;
+    });
+}
+
+async function fetchSuggestions() {
+    try {
+        const memberResponse = await fetch(`${SCRIPT_URL}?action=getSuggestions&type=member`);
+        const memberData = await memberResponse.json();
+        if (memberData.status === 'success') {
+            const memberNumberList = document.getElementById('memberNumbers');
+            const memberNameList = document.getElementById('memberNames');
+            memberData.suggestions.forEach(suggestion => {
+                const optionNumber = document.createElement('option');
+                optionNumber.value = suggestion.memberNumber;
+                memberNumberList.appendChild(optionNumber);
+                const optionName = document.createElement('option');
+                optionName.value = suggestion.memberName;
+                memberNameList.appendChild(optionName);
+            });
+        } else {
+            showToast('সদস্য তথ্য লোড ব্যর্থ', 'bg-danger');
+        }
+
+        const employeeResponse = await fetch(`${SCRIPT_URL}?action=getSuggestions&type=payer`);
+        const employeeData = await employeeResponse.json();
+        if (employeeData.status === 'success') {
+            const employeeList = document.getElementById('employeeNames');
+            employeeData.suggestions.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                employeeList.appendChild(option);
+            });
+        } else {
+            showToast('কর্মচারী তথ্য লোড ব্যর্থ', 'bg-danger');
+        }
+    } catch (error) {
+        console.error('Error fetching suggestions:', error);
+        showToast('ডেটা লোড করতে ব্যর্থ হয়েছে', 'bg-danger');
+    }
+}
+
+function showToast(message, bgClass = 'bg-primary') {
+    const toast = document.getElementById('toast');
+    toast.classList.remove('bg-primary', 'bg-success', 'bg-danger');
+    toast.classList.add(bgClass);
+    toast.querySelector('.toast-body').textContent = message;
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+}
+
+document.getElementById('confirmButton').addEventListener('click', async function() {
+    const secretCode = document.getElementById('secretCode').value;
+    const form = document.getElementById('expenseForm');
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
+    errorMessage.style.display = 'none';
+    successMessage.style.display = 'none';
+
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    const formData = new FormData(form);
+    formData.append('secretCode', secretCode);
+    formData.append('action', 'addExternalExpense');
+
+    try {
+        showToast('লেনদেন প্রক্রিয়াধীন', 'bg-primary');
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        showToast(result.message, result.status === 'success' ? 'bg-success' : 'bg-danger');
+        if (result.status === 'success') {
+            form.reset();
+            successMessage.textContent = `${result.message} (রশিদ নম্বর: ${result.receiptNumber})`;
+            successMessage.style.display = 'block';
+            const modal = bootstrap.Modal.getInstance(document.getElementById('secretCodeModal'));
+            modal.hide();
+        } else {
+            errorMessage.textContent = result.message;
+            errorMessage.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('লেনদেন ব্যর্থ হয়েছে', 'bg-danger');
+        errorMessage.textContent = 'ব্যয় জমা দিতে ব্যর্থ হয়েছে: ' + error.message;
+        errorMessage.style.display = 'block';
+    }
+});
+
+// Show modal when "জমা দিন" button is clicked
+document.querySelector('button[data-bs-target="#secretCodeModal"]').addEventListener('click', function() {
+    const modal = new bootstrap.Modal(document.getElementById('secretCodeModal'));
+    modal.show();
+    document.getElementById('secretCode').value = ''; // Clear secret code field
+});
+    </script>
+</body>
+</html>

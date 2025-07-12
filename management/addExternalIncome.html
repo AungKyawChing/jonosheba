@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বাহ্যিক আয় যোগ করুন</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .navbar { margin-bottom: 20px; }
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
+        .datetime-local-container { position: relative; }
+        .datetime-local-container input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">ম্যানেজমেন্ট</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="addMember.html">সদস্য যোগ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="addReceipt.html">অর্থ গ্রহণ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="addPayment.html">অর্থ প্রদান</a></li>
+                    <li class="nav-item active"><a class="nav-link active" href="addExternalIncome.html">বাহ্যিক আয়</a></li>
+                    <li class="nav-item"><a class="nav-link" href="addExternalExpenses.html">বাহ্যিক ব্যয়</a></li>
+                    <li class="nav-item"><a class="nav-link" href="DPS.html">ডিপিএস</a></li>
+          																								<li class="nav-item"><a class="nav-link" href="FixedDeposit.html">স্থায়ী আমানত</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="text-center my-4">বাহ্যিক আয় যোগ করুন</h2>
+        <form id="incomeForm" novalidate>
+            <div class="mb-3">
+                <label for="memberNumber" class="form-label">সদস্য নং (যদি প্রদানকারী সদস্য হয়) :</label>
+                <input type="text" name="memberNumber" id="memberNumber" class="form-control" list="memberNumbers" autocomplete="off">
+            </div>
+            <div class="mb-3">
+                <label for="memberName" class="form-label">সদস্যের নাম (যদি প্রদানকারী সদস্য হয়) :</label>
+                <input type="text" name="memberName" id="memberName" class="form-control" list="memberNames" autocomplete="off">
+            </div>
+            <div class="mb-3 datetime-local-container">
+                <label for="dateTimeInput" class="form-label">আয়ের তারিখ ও সময় :</label>
+                <input type="datetime-local" id="dateTimeInput" class="form-control" required>
+                <input type="hidden" name="dateTime" id="dateTime">
+            </div>
+            <div class="mb-3">
+                <label for="type" class="form-label">আয়ের ধরন :</label>
+                <input type="text" name="type" id="type" class="form-control" list="incomeTypes" required>
+                <datalist id="incomeTypes">
+                    <option value="ঋণ ফর্ম বিক্রয়">
+                </datalist>
+            </div>
+            <div class="mb-3">
+                <label for="amount" class="form-label">পরিমাণ :</label>
+                <input type="number" name="amount" id="amount" class="form-control" step="0.01" required>
+            </div>
+            <div class="mb-3">
+                <label for="payerName" class="form-label">প্রদানকারীর নাম :</label>
+                <input type="text" name="payerName" id="payerName" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="collectorName" class="form-label">আদায়কারীর নাম (কর্মচারী) :</label>
+                <input type="text" name="collectorName" id="collectorName" class="form-control" list="employeeNames" required autocomplete="off">
+                <datalist id="employeeNames"></datalist>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">লেনদেনের বিবরণ :</label>
+                <textarea name="description" id="description" class="form-control"></textarea>
+            </div>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#secretCodeModal">জমা দিন</button>
+        </form>
+        <p id="errorMessage" class="error" style="display: none;"></p>
+        <p id="successMessage" class="success" style="display: none;"></p>
+
+        <!-- Datalists -->
+        <datalist id="memberNumbers"></datalist>
+        <datalist id="memberNames"></datalist>
+    </div>
+
+    <!-- Secret Code Modal -->
+    <div class="modal fade" id="secretCodeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">গোপন কোড দিন</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="password" id="secretCode" class="form-control" placeholder="গোপন কোড">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">বাতিল</button>
+                    <button type="button" class="btn btn-primary" id="confirmButton">কনফার্ম</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container">
+        <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body"></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="api.js"></script>
+    <script>
+        $(document).ready(function() {
+  fetchSuggestions();
+  initializeDateTimePicker();
+});
+
+function initializeDateTimePicker() {
+  const dateTimeInput = $('#dateTimeInput');
+  const hiddenDateTime = $('#dateTime');
+  
+  dateTimeInput.val('');
+
+  dateTimeInput.on('change', function() {
+    const date = new Date(this.value);
+    if (isNaN(date)) {
+      hiddenDateTime.val('');
+      return;
+    }
+    const formatted = date.getFullYear() + '-' +
+                     String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                     String(date.getDate()).padStart(2, '0') + ' ' +
+                     String(date.getHours()).padStart(2, '0') + ':' +
+                     String(date.getMinutes()).padStart(2, '0') + ':00';
+    hiddenDateTime.val(formatted);
+  });
+}
+
+async function fetchSuggestions() {
+  try {
+    const memberResponse = await fetch(`${SCRIPT_URL}?action=getSuggestions&type=member`);
+    const memberData = await memberResponse.json();
+    if (memberData.status === 'success') {
+      const memberNumberList = $('#memberNumbers');
+      const memberNameList = $('#memberNames');
+      memberData.suggestions.forEach(suggestion => {
+        memberNumberList.append(`<option value="${suggestion.memberNumber}">`);
+        memberNameList.append(`<option value="${suggestion.memberName}">`);
+      });
+    } else {
+      showToast('সদস্য তথ্য লোড ব্যর্থ', 'bg-danger');
+    }
+
+    const employeeResponse = await fetch(`${SCRIPT_URL}?action=getSuggestions&type=payer`);
+    const employeeData = await employeeResponse.json();
+    if (employeeData.status === 'success') {
+      const employeeList = $('#employeeNames');
+      employeeData.suggestions.forEach(name => {
+        employeeList.append(`<option value="${name}">`);
+      });
+    } else {
+      showToast('কর্মচারী তথ্য লোড ব্যর্থ', 'bg-danger');
+    }
+  } catch (error) {
+    console.error('Error fetching suggestions:', error);
+    showToast('ডেটা লোড করতে ব্যর্থ হয়েছে', 'bg-danger');
+  }
+}
+
+function showToast(message, bgClass = 'bg-primary') {
+  const toast = $('#toast');
+  toast.removeClass('bg-primary bg-success bg-danger').addClass(bgClass);
+  toast.find('.toast-body').text(message);
+  const bsToast = new bootstrap.Toast(toast[0]);
+  bsToast.show();
+}
+
+$('#confirmButton').click(async function() {
+  const secretCode = $('#secretCode').val();
+  const form = $('#incomeForm');
+  const errorMessage = $('#errorMessage');
+  const successMessage = $('#successMessage');
+  errorMessage.hide();
+  successMessage.hide();
+
+  if (!form[0].checkValidity()) {
+    form[0].reportValidity();
+    return;
+  }
+
+  const formData = new FormData(form[0]);
+  formData.append('secretCode', secretCode);
+  formData.append('action', 'addExternalIncome');
+
+  try {
+    showToast('লেনদেন প্রক্রিয়াধীন', 'bg-primary');
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: formData
+    });
+    const result = await response.json();
+    showToast(result.message, result.status === 'success' ? 'bg-success' : 'bg-danger');
+    if (result.status === 'success') {
+      form[0].reset();
+      successMessage.text(`${result.message} (রশিদ নম্বর: ${result.receiptNumber})`).show();
+      $('#secretCodeModal').modal('hide');
+    } else {
+      errorMessage.text(result.message).show();
+    }
+  } catch (error) {
+    console.error('Submission error:', error);
+    showToast('Error', 'লেনদেন ব্যর্থ হয়েছে', 'error');
+    errorMessage.text('আয় জমা দিতে ব্যর্থ হয়েছে: ' + error.message).show();
+  }
+});
+
+$('button[data-bs-target="#secretCodeModal"]').click(function() {
+  $('#secretCodeModal').modal('show');
+  $('#secretCode').val(''); // Clear secret code field
+});
+    </script>
+</body>
+</html>

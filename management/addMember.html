@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>সদস্য যোগ করুন</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f8f9fa; }
+    .navbar { margin-bottom: 20px; }
+    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
+    .datetime-local-container { position: relative; }
+    .datetime-local-container input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="#">ম্যানেজমেন্ট</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active"><a class="nav-link active" href="addMember.html">সদস্যা যোগ</a></li>
+          <li class="nav-item"><a class="nav-link" href="addReceipt.html">অর্থ গ্রহণ</a></li>
+          <li class="nav-item"><a class="nav-link" href="addPayment.html">অর্থ প্রদান</a></li>
+          <li class="nav-item"><a class="nav-link" href="addExternalIncome.html">বাহ্যিক আয়</a></li>
+          <li class="nav-item"><a class="nav-link" href="addExternalExpenses.html">বাহ্যিক ব্যয়</a></li>
+                    <li class="nav-item"><a class="nav-link" href="DPS.html">ডিপিএস</a></li>
+          																								<li class="nav-item"><a class="nav-link" href="FixedDeposit.html">স্থায়ী আমানত</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h2 class="text-center my-4">সদস্য যোগ করুন</h2>
+    <form id="addMemberForm">
+      <div class="mb-3">
+        <label for="memberNumber" class="form-label">সদস্য নং :</label>
+        <input type="text" name="memberNumber" id="memberNumber" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="memberName" class="form-label">সদস্যের নাম :</label>
+        <input type="text" name="memberName" id="memberName" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="fatherOrHusbandName" class="form-label">পিতা/স্বামীর নাম :</label>
+        <input type="text" name="fatherOrHusbandName" id="fatherOrHusbandName" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="address" class="form-label">ঠিকানা :</label>
+        <input type="text" name="address" id="address" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="age" class="form-label">বয়স :</label>
+        <input type="text" name="age" id="age" class="form-control" required>
+      </div>
+      <div class="mb-3 datetime-local-container">
+        <label for="joinDateTime" class="form-label">যোগদানের তারিখ ও সময় :</label>
+        <input type="datetime-local" name="joinDateTimeInput" id="joinDateTimeInput" class="form-control" required>
+        <input type="hidden" name="joinDateTime" id="joinDateTime">
+      </div>
+      <div class="mb-3">
+        <label for="status" class="form-label">Status :</label>
+        <select name="status" id="status" class="form-select" required>
+          <option value="" disabled selected>Status নির্বাচন করুন</option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="nomineeName" class="form-label">নমিনির নাম :</label>
+        <input type="text" name="nomineeName" id="nomineeName" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="nomineeAddress" class="form-label">নমিনির ঠিকানা :</label>
+        <input type="text" name="nomineeAddress" id="nomineeAddress" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="phoneNumber" class="form-label">ফোন নম্বর :</label>
+        <input type="text" name="phoneNumber" id="phoneNumber" class="form-control" placeholder="যেমন: +8801712345678" value="+8801" required>
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">ইমেইল :</label>
+        <input type="text" name="email" id="email" class="form-control" value="123@gmail.com" required>
+      </div>
+      <div class="mb-3">
+        <label for="nationalId" class="form-label">জাতীয় পরিচয়পত্র :</label>
+        <input type="text" name="nationalId" id="nationalId" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="birthRegistration" class="form-label">জন্ম নিবন্ধন :</label>
+        <input type="text" name="birthRegistration" id="birthRegistration" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="admissionFee" class="form-label">ভর্তি ফি :</label>
+        <input type="text" name="admissionFee" id="admissionFee" class="form-control" value="100" required>
+      </div>
+      <div class="mb-3">
+        <label for="payerName" class="form-label">প্রদানকারীর নাম (সদস্যের নাম) :</label>
+        <input type="text" name="payerName" id="payerName" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="collectorName" class="form-label">আদায়কারীর নাম (কর্মচারী) :</label>
+        <input type="text" name="collectorName" id="collectorName" class="form-control" list="collectorSuggestions" required>
+        <datalist id="collectorSuggestions"></datalist>
+      </div>
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#secretCodeModal">জমা দিন</button>
+    </form>
+  </div>
+
+  <!-- Secret Code Modal -->
+  <div class="modal fade" id="secretCodeModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">গোপন কোড দিন</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="password" id="secretCode" class="form-control" placeholder="গোপন কোড" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">বাতিল</button>
+          <button type="button" class="btn btn-primary" id="confirmButton">কনফার্ম</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container">
+    <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-body"></div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="api.js"></script>
+  <script>
+    let isSubmitting = false;
+
+$(document).ready(function() {
+  fetchNextMemberNumber();
+  fetchCollectorSuggestions();
+  initializeDateTimePicker();
+  $('#addMemberForm [name="memberName"]').on('input', function() {
+    $('#addMemberForm [name="payerName"]').val($(this).val());
+  });
+});
+
+function initializeDateTimePicker() {
+  const dateTimeInput = $('#joinDateTimeInput');
+  const hiddenDateTime = $('#joinDateTime');
+  
+  // Set default to current date and time
+  const now = new Date();
+  const offset = 6 * 60; // +06:00 in minutes
+  const localISOTime = new Date(now.getTime() + (offset * 60 * 1000)).toISOString().slice(0, 16);
+  dateTimeInput.val(localISOTime);
+
+  // On change, format to yyyy-MM-dd HH:mm:ss
+  dateTimeInput.on('change', function() {
+    const date = new Date(this.value);
+    if (isNaN(date)) {
+      hiddenDateTime.val('');
+      return;
+    }
+    const formatted = date.getFullYear() + '-' +
+                     String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                     String(date.getDate()).padStart(2, '0') + ' ' +
+                     String(date.getHours()).padStart(2, '0') + ':' +
+                     String(date.getMinutes()).padStart(2, '0') + ':00';
+    hiddenDateTime.val(formatted);
+  }).trigger('change');
+}
+
+async function fetchNextMemberNumber() {
+  try {
+    const response = await fetch(`${SCRIPT_URL}?action=getNextMemberNumber`);
+    const result = await response.json();
+    if (result.status === 'success') {
+      $('#addMemberForm [name="memberNumber"]').val(result.data);
+    }
+  } catch (error) {
+    console.error('Error fetching next member number:', error);
+  }
+}
+
+async function fetchCollectorSuggestions() {
+  try {
+    const response = await fetch(`${SCRIPT_URL}?action=getSuggestions&type=payer`);
+    const result = await response.json();
+    if (result.status === 'success') {
+      const datalist = $('#collectorSuggestions');
+      datalist.empty();
+      result.suggestions.forEach(name => {
+        datalist.append(`<option value="${name}">${name}</option>`);
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching collector suggestions:', error);
+  }
+}
+
+function showToast(message, bgClass = 'bg-primary') {
+  const toast = $('#toast');
+  toast.removeClass('bg-primary bg-success bg-danger').addClass(bgClass);
+  toast.find('.toast-body').text(message);
+  const bsToast = new bootstrap.Toast(toast[0]);
+  bsToast.show();
+}
+
+$('#confirmButton').click(async function() {
+  if (isSubmitting) return;
+  isSubmitting = true;
+  $('#confirmButton').prop('disabled', true);
+  showToast('লেনদেন প্রক্রিয়াধীন', 'bg-primary');
+
+  const secretCode = $('#secretCode').val();
+  const form = $('#addMemberForm');
+  const formData = new FormData(form[0]);
+  formData.append('secretCode', secretCode);
+  formData.append('action', 'addMember');
+
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: formData
+    });
+    const result = await response.json();
+    showToast(result.message, result.status === 'success' ? 'bg-success' : 'bg-danger');
+    if (result.status === 'success') {
+      form[0].reset();
+      fetchNextMemberNumber();
+      $('#secretCodeModal').modal('hide');
+      initializeDateTimePicker();
+    }
+  } catch (error) {
+    console.error('Submission error:', error);
+    showToast('লেনদেন ব্যর্থ হয়েছে', 'bg-danger');
+  } finally {
+    isSubmitting = false;
+    $('#confirmButton').prop('disabled', false);
+  }
+});
+  </script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ডিপিএস ম্যানেজমেন্ট</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f8f9fa; }
+    .navbar { margin-bottom: 20px; }
+    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
+    .datetime-local-container { position: relative; }
+    .datetime-local-container input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+    }
+    .transaction-detail { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+    .form-section { display: none; }
+    .form-section.active { display: block; }
+    .nav-tabs .nav-link { cursor: pointer; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="#">ম্যানেজমেন্ট</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="addMember.html">সদস্য যোগ</a></li>
+          <li class="nav-item"><a class="nav-link" href="addReceipt.html">অর্থ গ্রহণ</a></li>
+          <li class="nav-item"><a class="nav-link" href="addPayment.html">অর্থ প্রদান</a></li>
+          <li class="nav-item"><a class="nav-link" href="addExternalIncome.html">বাহ্যিক আয়</a></li>
+          <li class="nav-item"><a class="nav-link" href="addExternalExpenses.html">বাহ্যিক ব্যয়</a></li>
+          <li class="nav-item active"><a class="nav-link active" href="DPS.html">ডিপিএস</a></li>
+          <li class="nav-item"><a class="nav-link" href="FixedDeposit.html">স্থায়ী আমানত</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h2 class="text-center my-4">ডিপিএস</h2>
+    <ul class="nav nav-tabs mb-4">
+      <li class="nav-item">
+        <a class="nav-link active" data-form="accountOpen">হিসাব খোলা</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-form="collection">আদায়</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-form="payment">প্রদান</a>
+      </li>
+    </ul>
+
+    <!-- Account Open Form -->
+    <div id="accountOpen" class="form-section active">
+      <form id="dpsAccountOpenForm">
+        <div class="mb-3">
+          <label for="dpsAccountNumber" class="form-label">ডিপিএস হিসাব নং :</label>
+          <input type="text" name="dpsAccountNumber" id="dpsAccountNumber" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="dpsAccountHolderName" class="form-label">হিসাবধারীর নাম :</label>
+          <input type="text" name="dpsAccountHolderName" id="dpsAccountHolderName" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="dpsAccountHolderFatherName" class="form-label">পিতার নাম :</label>
+          <input type="text" name="dpsAccountHolderFatherName" id="dpsAccountHolderFatherName" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="dpsAccountHolderAddress" class="form-label">ঠিকানা :</label>
+          <input type="text" name="dpsAccountHolderAddress" id="dpsAccountHolderAddress" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="dpsAccountHolderAge" class="form-label">বয়স :</label>
+          <input type="text" name="dpsAccountHolderAge" id="dpsAccountHolderAge" class="form-control" required>
+        </div>
+        <div class="mb-3 datetime-local-container">
+          <label for="dpsAccountOpeningTimeInput" class="form-label">হিসাব খোলার তারিখ ও সময় :</label>
+          <input type="datetime-local" name="dpsAccountOpeningTimeInput" id="dpsAccountOpeningTimeInput" class="form-control" required>
+          <input type="hidden" name="dpsAccountOpeningTime" id="dpsAccountOpeningTime">
+        </div>
+        <div class="mb-3">
+          <label for="dpsStatus" class="form-label">স্ট্যাটাস :</label>
+          <select name="dpsStatus" id="dpsStatus" class="form-select" required>
+            <option value="" disabled selected>স্ট্যাটাস নির্বাচন করুন</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="dpsNomineeName" class="form-label">নমিনির নাম :</label>
+          <input type="text" name="dpsNomineeName" id="dpsNomineeName" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="dpsNomineeAddress" class="form-label">নমিনির ঠিকানা :</label>
+          <input type="text" name="dpsNomineeAddress" id="dpsNomineeAddress" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="dpsAccountHolderPhoneNumber" class="form-label">ফোন নম্বর :</label>
+          <input type="text" name="dpsAccountHolderPhoneNumber" id="dpsAccountHolderPhoneNumber" class="form-control" placeholder="যেমন: +8801712345678" value="+8801" required>
+        </div>
+        <div class="mb-3">
+          <label for="dpsAccountHolderEmailAddress" class="form-label">ইমেইল :</label>
+          <input type="text" name="dpsAccountHolderEmailAddress" id="dpsAccountHolderEmailAddress" class="form-control" value="123@gmail.com" required>
+        </div>
+        <div class="mb-3">
+          <label for="dpsAccountHolderNidNumber" class="form-label">জাতীয় পরিচয়পত্র :</label>
+          <input type="text" name="dpsAccountHolderNidNumber" id="dpsAccountHolderNidNumber" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="dpsAccountHolderBirthCertificateNumber" class="form-label">জন্ম নিবন্ধন :</label>
+          <input type="text" name="dpsAccountHolderBirthCertificateNumber" id="dpsAccountHolderBirthCertificateNumber" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="dpsAccountOpeningFee" class="form-label">হিসাব খোলার ফি :</label>
+          <input type="text" name="dpsAccountOpeningFee" id="dpsAccountOpeningFee" class="form-control" value="100" required>
+        </div>
+        <div class="mb-3">
+          <label for="payerName" class="form-label">প্রদানকারীর নাম (হিসাবধারী) :</label>
+          <input type="text" name="payerName" id="payerName" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="collectorName" class="form-label">আদায়কারীর নাম (কর্মচারী) :</label>
+          <input type="text" name="collectorName" id="collectorName" class="form-control" list="collectorSuggestions" required>
+          <datalist id="collectorSuggestions"></datalist>
+        </div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#secretCodeModal">জমা দিন</button>
+      </form>
+    </div>
+
+    <!-- Collection Form -->
+    <div id="collection" class="form-section">
+      <form id="dpsCollectionForm" novalidate>
+        <div class="mb-3">
+          <label for="dpsAccountNumberCollection" class="form-label">ডিপিএস হিসাব নং :</label>
+          <input type="text" name="dpsAccountNumber" id="dpsAccountNumberCollection" class="form-control" list="dpsAccountSuggestions" required>
+          <datalist id="dpsAccountSuggestions"></datalist>
+        </div>
+        <div class="mb-3">
+          <label for="dpsAccountHolderNameCollection" class="form-label">হিসাবধারীর নাম :</label>
+          <input type="text" name="dpsAccountHolderName" id="dpsAccountHolderNameCollection" class="form-control" readonly>
+        </div>
+        <div class="mb-3 datetime-local-container">
+          <label for="dateAndTimeInputCollection" class="form-label">লেনদেনের তারিখ ও সময় :</label>
+          <input type="datetime-local" name="dateAndTimeInput" id="dateAndTimeInputCollection" class="form-control" required>
+          <input type="hidden" name="dateAndTime" id="dateAndTimeCollection">
+        </div>
+        <div class="mb-3">
+          <label for="payerNameCollection" class="form-label">প্রদানকারীর নাম (হিসাবধারী) :</label>
+          <input type="text" name="payerName" id="payerNameCollection" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="collectorNameCollection" class="form-label">আদায়কারীর নাম (কর্মচারী) :</label>
+          <input type="text" name="collectorName" id="collectorNameCollection" class="form-control" list="collectorSuggestions" required>
+        </div>
+        <div id="transactionDetailsCollection">
+          <div class="transaction-detail">
+            <select name="type" class="form-select" required>
+              <option value="ডিপিএস জমা">ডিপিএস জমা</option>
+              <option value="ডিপিএস জরিমানা">ডিপিএস জরিমানা</option>
+            </select>
+            <input type="number" name="amount" class="form-control" placeholder="পরিমাণ" required>
+            <button type="button" class="btn btn-danger btn-sm" onclick="$(this).parent().remove()">✖</button>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary mt-3" onclick="addTransactionDetail('transactionDetailsCollection')">আরেকটি লেনদেন যোগ করুন</button>
+        <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#secretCodeModal">জমা দিন</button>
+      </form>
+    </div>
+
+    <!-- Payment Form -->
+    <div id="payment" class="form-section">
+      <form id="dpsPaymentForm" novalidate>
+        <div class="mb-3">
+          <label for="dpsAccountNumberPayment" class="form-label">ডিপিএস হিসাব নং :</label>
+          <input type="text" name="dpsAccountNumber" id="dpsAccountNumberPayment" class="form-control" list="dpsAccountSuggestions" required>
+        </div>
+        <div class="mb-3">
+          <label for="dpsAccountHolderNamePayment" class="form-label">হিসাবধারীর নাম :</label>
+          <input type="text" name="dpsAccountHolderName" id="dpsAccountHolderNamePayment" class="form-control" readonly>
+        </div>
+        <div class="mb-3 datetime-local-container">
+          <label for="dateAndTimeInputPayment" class="form-label">লেনদেনের তারিখ ও সময় :</label>
+          <input type="datetime-local" name="dateAndTimeInput" id="dateAndTimeInputPayment" class="form-control" required>
+          <input type="hidden" name="dateAndTime" id="dateAndTimePayment">
+        </div>
+        <div class="mb-3">
+          <label for="payerNamePayment" class="form-label">প্রদানকারীর নাম (কর্মচারী) :</label>
+          <input type="text" name="payerName" id="payerNamePayment" class="form-control" list="collectorSuggestions" required>
+        </div>
+        <div class="mb-3">
+          <label for="collectorNamePayment" class="form-label">আদায়কারীর নাম (হিসাবধারী) :</label>
+          <input type="text" name="collectorName" id="collectorNamePayment" class="form-control" required>
+        </div>
+        <div id="transactionDetailsPayment">
+          <div class="transaction-detail">
+            <select name="type" class="form-select" required>
+              <option value="ডিপিএস উত্তোলন">ডিপিএস উত্তোলন</option>
+              <option value="ডিপিএস লাভ বিতরণ">ডিপিএস লাভ বিতরণ</option>
+            </select>
+            <input type="number" name="amount" class="form-control" placeholder="পরিমাণ" required>
+            <button type="button" class="btn btn-danger btn-sm" onclick="$(this).parent().remove()">✖</button>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary mt-3" onclick="addTransactionDetail('transactionDetailsPayment')">আরেকটি লেনদেন যোগ করুন</button>
+        <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#secretCodeModal">জমা দিন</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Secret Code Modal -->
+  <div class="modal fade" id="secretCodeModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">গোপন কোড দিন</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="password" id="secretCode" class="form-control" placeholder="গোপন কোড" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">বাতিল</button>
+          <button type="button" class="btn btn-primary" id="confirmButton">কনফার্ম</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container">
+    <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-body"></div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="api.js"></script>
+  <script>
+    let isSubmitting = false;
+    let activeForm = 'accountOpen';
+
+    $(document).ready(function() {
+      fetchNextDPSAccountNumber();
+      fetchCollectorSuggestions();
+      fetchDPSAccountSuggestions();
+      initializeDateTimePickers();
+      setupFormSwitching();
+      $('#dpsAccountOpenForm [name="dpsAccountHolderName"]').on('input', function() {
+        $('#dpsAccountOpenForm [name="payerName"]').val($(this).val());
+      });
+      $('#dpsCollectionForm [name="dpsAccountNumber"]').on('input', updateDPSAccountHolderName);
+      $('#dpsPaymentForm [name="dpsAccountNumber"]').on('input', updateDPSAccountHolderName);
+    });
+
+    function initializeDateTimePickers() {
+      $('.datetime-local-container input[type="datetime-local"]').each(function() {
+        const input = $(this);
+        const hiddenInput = input.next('input[type="hidden"]');
+        const now = new Date();
+        const offset = 6 * 60; // +06:00 in minutes
+        const localISOTime = new Date(now.getTime() + (offset * 60 * 1000)).toISOString().slice(0, 16);
+        input.val(activeForm === 'accountOpen' ? localISOTime : '');
+        input.on('change', function() {
+          const date = new Date(this.value);
+          if (isNaN(date)) {
+            hiddenInput.val('');
+            return;
+          }
+          const formatted = date.getFullYear() + '-' +
+                           String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                           String(date.getDate()).padStart(2, '0') + ' ' +
+                           String(date.getHours()).padStart(2, '0') + ':' +
+                           String(date.getMinutes()).padStart(2, '0') + ':00';
+          hiddenInput.val(formatted);
+        }).trigger('change');
+      });
+    }
+
+    async function fetchNextDPSAccountNumber() {
+      try {
+        const response = await fetch(`${SCRIPT_URL}?action=getNextDPSAccountNumber`);
+        const result = await response.json();
+        if (result.status === 'success') {
+          $('#dpsAccountOpenForm [name="dpsAccountNumber"]').val(result.data);
+        }
+      } catch (error) {
+        console.error('Error fetching next DPS account number:', error);
+      }
+    }
+
+    async function fetchCollectorSuggestions() {
+      try {
+        const response = await fetch(`${SCRIPT_URL}?action=getSuggestions&type=payer`);
+        const result = await response.json();
+        if (result.status === 'success') {
+          const datalist = $('#collectorSuggestions');
+          datalist.empty();
+          result.suggestions.forEach(name => {
+            datalist.append(`<option value="${name}">${name}</option>`);
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching collector suggestions:', error);
+      }
+    }
+
+    async function fetchDPSAccountSuggestions() {
+      try {
+        const response = await fetch(`${SCRIPT_URL}?action=getSuggestions&type=dpsAccount`);
+        const result = await response.json();
+        if (result.status === 'success') {
+          const datalist = $('#dpsAccountSuggestions');
+          datalist.empty();
+          result.suggestions.forEach(account => {
+            datalist.append(`<option value="${account.dpsAccountNumber}">${account.dpsAccountHolderName}</option>`);
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching DPS account suggestions:', error);
+      }
+    }
+
+    async function updateDPSAccountHolderName() {
+      const accountNumber = $(this).val();
+      const formId = $(this).closest('form').attr('id');
+      try {
+        const response = await fetch(`${SCRIPT_URL}?action=getSuggestions&type=dpsAccount`);
+        const result = await response.json();
+        if (result.status === 'success') {
+          const account = result.suggestions.find(a => a.dpsAccountNumber === accountNumber);
+          const accountHolderName = account ? account.dpsAccountHolderName : '';
+          $(`#${formId} [name="dpsAccountHolderName"]`).val(accountHolderName);
+          $(`#${formId} [name="payerName"]`).val(formId === 'dpsCollectionForm' ? accountHolderName : '');
+          $(`#${formId} [name="collectorName"]`).val(formId === 'dpsPaymentForm' ? accountHolderName : '');
+        }
+      } catch (error) {
+        console.error('Error updating DPS account holder name:', error);
+      }
+    }
+
+    function setupFormSwitching() {
+      $('.nav-tabs .nav-link').click(function() {
+        $('.nav-tabs .nav-link').removeClass('active');
+        $(this).addClass('active');
+        const formId = $(this).data('form');
+        $('.form-section').removeClass('active').filter(`#${formId}`).addClass('active');
+        activeForm = formId;
+        initializeDateTimePickers();
+      });
+    }
+
+    function addTransactionDetail(containerId) {
+      const container = $(`#${containerId}`);
+      const options = containerId.includes('Collection') ?
+        `<option value="ডিপিএস জমা">ডিপিএস জমা</option><option value="ডিপিএস জরিমানা">ডিপিএস জরিমানা</option>` :
+        `<option value="ডিপিএস উত্তোলন">ডিপিএস উত্তোলন</option><option value="ডিপিএস লাভ বিতরণ">ডিপিএস লাভ বিতরণ</option>`;
+      container.append(`
+        <div class="transaction-detail">
+          <select name="type" class="form-select" required>
+            ${options}
+          </select>
+          <input type="number" name="amount" class="form-control" placeholder="পরিমাণ" required>
+          <button type="button" class="btn btn-danger btn-sm" onclick="$(this).parent().remove()">✖</button>
+        </div>
+      `);
+    }
+
+    function showToast(message, bgClass = 'bg-primary') {
+      const toast = $('#toast');
+      toast.removeClass('bg-primary bg-success bg-danger').addClass(bgClass);
+      toast.find('.toast-body').text(message);
+      const bsToast = new bootstrap.Toast(toast[0]);
+      bsToast.show();
+    }
+
+    $('#confirmButton').click(async function() {
+      if (isSubmitting) return;
+      isSubmitting = true;
+      $('#confirmButton').prop('disabled', true);
+      showToast('লেনদেন প্রক্রিয়াধীন', 'bg-primary');
+
+      const secretCode = $('#secretCode').val();
+      const form = $(`#dps${activeForm.charAt(0).toUpperCase() + activeForm.slice(1)}Form`);
+      if (!form[0].checkValidity()) {
+        form[0].reportValidity();
+        isSubmitting = false;
+        $('#confirmButton').prop('disabled', false);
+        return;
+      }
+
+      const formData = new FormData(form[0]);
+      formData.append('secretCode', secretCode);
+      formData.append('action', activeForm === 'accountOpen' ? 'addDPSAccount' : activeForm === 'collection' ? 'addDPSCollection' : 'addDPSPayment');
+      if (activeForm !== 'accountOpen') {
+        $(`#transactionDetails${activeForm.charAt(0).toUpperCase() + activeForm.slice(1)} .transaction-detail`).each(function(index) {
+          const type = $(this).find('select[name="type"]').val();
+          const amount = $(this).find('input[name="amount"]').val();
+          formData.append(`transactionDetails[${index}][type]`, type);
+          formData.append(`transactionDetails[${index}][amount]`, amount);
+        });
+      }
+
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.json();
+        showToast(result.message, result.status === 'success' ? 'bg-success' : 'bg-danger');
+        if (result.status === 'success') {
+          form[0].reset();
+          if (activeForm !== 'accountOpen') {
+            $(`#transactionDetails${activeForm.charAt(0).toUpperCase() + activeForm.slice(1)}`).html(`
+              <div class="transaction-detail">
+                <select name="type" class="form-select" required>
+                  ${activeForm === 'collection' ? 
+                    '<option value="ডিপিএস জমা">ডিপিএস জমা</option><option value="ডিপিএস জরিমানা">ডিপিএস জরিমানা</option>' :
+                    '<option value="ডিপিএস উত্তোলন">ডিপিএস উত্তোলন</option><option value="ডিপি঎স লাভ বিতরণ">ডিপিএস লাভ বিতরণ</option>'}
+                </select>
+                <input type="number" name="amount" class="form-control" placeholder="পরিমাণ" required>
+                <button type="button" class="btn btn-danger btn-sm" onclick="$(this).parent().remove()">✖</button>
+              </div>
+            `);
+          }
+          $('#secretCode').val('');
+          $('#secretCodeModal').modal('hide');
+          initializeDateTimePickers();
+          if (activeForm === 'accountOpen') fetchNextDPSAccountNumber();
+        }
+      } catch (error) {
+        console.error('Submission error:', error);
+        showToast('লেনদেন ব্যর্থ হয়েছে', 'bg-danger');
+      } finally {
+        isSubmitting = false;
+        $('#confirmButton').prop('disabled', false);
+      }
+    });
+  </script>
+</body>
+</html>
