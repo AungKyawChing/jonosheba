@@ -1,0 +1,159 @@
+body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .report-master {
+            display: none; /* Initially hidden */
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .report-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .report-section {
+            margin-bottom: 20px;
+        }
+        .table th, .table td {
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+        .error {
+            color: #dc3545;
+            display: none;
+            margin-top: 10px;
+        }
+        .table-responsive {
+            overflow-x: auto;
+            max-height: 500px;
+        }
+        .sticky {
+            position: sticky;
+            left: 0;
+            background-color: #fff;
+            z-index: 1;
+            box-shadow: 2px 0 2px -1px rgba(0, 0, 0, 0.1);
+        }
+        .table thead th {
+            position: sticky;
+            top: 0;
+            background-color: #f8f9fa;
+            z-index: 2;
+        }
+        .table thead th.sticky {
+            z-index: 3;
+        }
+        .center-text {
+            text-align: center;
+        }
+        /* PDF Content Styling */
+        .pdf-content {
+            /*display: none; /* Hidden by default */
+            width: 297mm; /* A4 landscape width */
+            height: 210mm;
+            padding: 10mm;
+            background-color: #fff;
+            box-sizing: border-box;
+            font-family: 'Kalpurush', 'Noto Sans Bengali', sans-serif;
+        }
+        .pdf-header {
+            text-align: center;
+            margin-bottom: 10mm;
+        }
+        .pdf-tables {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10mm;
+        }
+        .pdf-income, .pdf-expense {
+            width: 48%;
+        }
+        .pdf-balance {
+            width: 100%;
+        }
+        .pdf-content table {
+            width: 293mm; /* Updated table width */
+            margin-left: 2mm; /* Left margin */
+            margin-right: 2mm; /* Right margin */
+            border-collapse: collapse;
+            font-size: 8pt; /* Reduced font size for compact text */
+            table-layout: auto; /* Allow columns to adjust automatically */
+        }
+        .pdf-content th, .pdf-content td {
+            border: 1px solid #dee2e6;
+            padding: 4px; /* Reduced padding */
+            text-align: center;
+            white-space: normal; /* Allow natural line breaks */
+            word-break: break-all; /* Break at any character to prevent overflow */
+            overflow-wrap: anywhere; /* Allow breaking at any point */
+            max-width: 15mm; /* Reduced max-width for better column fit */
+            min-width: 10mm; /* Ensure minimum column width */
+        }
+        .pdf-content th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .pdf-content .total-row td {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+        /* Responsive Layout */
+        @media (min-width: 992px) {
+            .report-sections {
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+            .income-section, .expense-section {
+                width: 45%;
+            }
+            .balance-section {
+                width: 90%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+        @media (max-width: 991px) {
+            .income-section, .expense-section, .balance-section {
+                width: 95%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+        @media (max-width: 768px) {
+            .table th, .table td {
+                font-size: 0.75rem;
+            }
+            .form-control, .btn {
+                font-size: 0.85rem;
+            }
+            .navbar-nav .nav-link {
+                padding: 0.5rem 1rem;
+            }
+        }
+        @media (max-width: 576px) {
+            h2 {
+                font-size: 1.5rem;
+            }
+            .table th, .table td {
+                font-size: 0.65rem;
+            }
+            .report-header h3 {
+                font-size: 1.25rem;
+            }
+        }

@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>রিপোর্ট তৈরি করুন</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .report-master {
+            display: none; /* Initially hidden */
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .report-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .report-section {
+            margin-bottom: 20px;
+        }
+        .table th, .table td {
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+        .error {
+            color: #dc3545;
+            display: none;
+            margin-top: 10px;
+        }
+        /* Ledger-style table styling */
+        .table-responsive {
+            overflow-x: auto;
+            max-height: 500px;
+        }
+        .sticky {
+            position: sticky;
+            left: 0;
+            background-color: #fff;
+            z-index: 1;
+            box-shadow: 2px 0 2px -1px rgba(0, 0, 0, 0.1);
+        }
+        .table thead th {
+            position: sticky;
+            top: 0;
+            background-color: #f8f9fa;
+            z-index: 2;
+        }
+        .table thead th.sticky {
+            z-index: 3;
+        }
+        .center-text {
+            text-align: center;
+        }
+        /* PDF Content Styling */
+        .pdf-content {
+            display: none; /* Hidden by default */
+            width: 210mm;
+            min-height: 297mm;
+            padding: 10mm;
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+        .pdf-header {
+            text-align: center;
+            margin-bottom: 10mm;
+        }
+        .pdf-tables {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10mm;
+        }
+        .pdf-income, .pdf-expense {
+            width: 48%;
+        }
+        .pdf-balance {
+            width: 100%;
+        }
+        .pdf-content table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12pt;
+        }
+        .pdf-content th, .pdf-content td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: left;
+        }
+        .pdf-content th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .pdf-content .total-row td {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+        /* Responsive Layout */
+        @media (min-width: 992px) {
+            .report-sections {
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+            .income-section, .expense-section {
+                width: 45%;
+            }
+            .balance-section {
+                width: 90%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+        @media (max-width: 991px) {
+            .income-section, .expense-section, .balance-section {
+                width: 95%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+        @media (max-width: 768px) {
+            .table th, .table td {
+                font-size: 0.75rem;
+            }
+            .form-control, .btn {
+                font-size: 0.85rem;
+            }
+            .navbar-nav .nav-link {
+                padding: 0.5rem 1rem;
+            }
+        }
+        @media (max-width: 576px) {
+            h2 {
+                font-size: 1.5rem;
+            }
+            .table th, .table td {
+                font-size: 0.65rem;
+            }
+            .report-header h3 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">জনসেবা কো-অপারেটিভ</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">ড্যাশবোর্ড</a></li>
+                    <li class="nav-item"><a class="nav-link" href="members.html">সদস্য তালিকা</a></li>
+                    <li class="nav-item"><a class="nav-link" href="ledger.html">লেজার দেখুন</a></li>
+                    <li class="nav-item"><a class="nav-link" href="dpsFixedDepositLedger.html">ডিপিএস ও স্থায়ী আমানত লেজার</a></li>
+                    <li class="nav-item"><a class="nav-link" href="receipt.html">রশিদ দেখুন</a></li>
+                    <li class="nav-item"><a class="nav-link" href="payable.html">পরিশোধযোগ্য পরিমাণ হিসাব করুন</a></li>
+                    <li class="nav-item"><a class="nav-link" href="externalIncomeExpenses.html">বাহ্যিক আয়-ব্যয় দেখুন</a></li>
+                    <li class="nav-item active"><a class="nav-link active" href="reportGenerator.html">রিপোর্ট তৈরি করুন</a></li>
+                    <li class="nav-item"><a class="nav-link" href="employeeCollectionReport.html">কর্মীর লেনদেন রিপোর্ট দেখুন</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="text-center mb-4">রিপোর্ট তৈরি করুন</h2>
+        <div class="form-container">
+            <div class="mb-3">
+                <label for="startDate" class="form-label">কোন তারিখ থেকে শুরু করে রিপোর্ট দেখতে চান</label>
+                <input type="datetime-local" id="startDate" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="endDate" class="form-label">কোন তারিখ পর্যন্ত রিপোর্ট দেখতে চান</label>
+                <input type="datetime-local" id="endDate" class="form-control" required>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary" onclick="generateReport()">Fetch</button>
+                <button class="btn btn-success" id="generatePDFButton" onclick="generatePDF()" disabled>Generate PDF</button>
+            </div>
+            <p id="errorMessage" class="error"></p>
+        </div>
+
+        <div class="report-master">
+            <div class="report-header">
+                <h3 id="reportTitle">রিপোর্ট<br>লেনদেন</h3>
+            </div>
+            <div class="report-sections">
+                <div class="report-section income-section">
+                    <h3 class="mb-3">আয়ের তালিকা</h3>
+                    <div class="table-responsive">
+                        <table id="incomeTable" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>আয়ের ধরণ</th>
+                                    <th>সর্বমোট পরিমাণ</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="report-section expense-section">
+                    <h3 class="mb-3">ব্যয়ের তালিকা</h3>
+                    <div class="table-responsive">
+                        <table id="expenseTable" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ব্যয়ের ধরণ</th>
+                                    <th>সর্বমোট পরিমাণ</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="report-section balance-section">
+                    <h3 class="mb-3">হাতে নগদ/Cash Balance</h3>
+                    <div class="table-responsive">
+                        <table id="balanceTable" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>বিবরণ</th>
+                                    <th>পরিমাণ</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Income List Table -->
+        <div id="incomeList" class="mb-4">
+            <h3 class="mb-3">আয়ের বিস্তারিত তালিকা</h3>
+            <div class="table-responsive">
+                <table id="detailedIncomeTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="center-text">তারিখ ও সময়</th>
+                            <th class="sticky center-text">রশিদ নং</th>
+                            <th class="center-text">সদস্য/হিসাব নং</th>
+                            <th class="center-text">সদস্যের/হিসাবীর নাম</th>
+                            <th class="center-text">শেয়ার জমা</th>
+                            <th class="center-text">শেয়ার জরিমানা</th>
+                            <th class="center-text">সঞ্চয় জমা</th>
+                            <th class="center-text">সঞ্চয় জরিমানা</th>
+                            <th class="center-text">ঋণ ফেরত</th>
+                            <th class="center-text">ঋণের মুনাফা/সেবামূল্য</th>
+                            <th class="center-text">ঋণের জরিমানা</th>
+                            <th class="center-text">ঋণ ফর্ম বিক্রয়</th>
+                            <th class="center-text">ভর্তি ফি</th>
+                            <th class="center-text">ডিপিএস হিসাব খোলা ফি</th>
+                            <th class="center-text">ডিপিএস জমা</th>
+                            <th class="center-text">ডিপিএস জরিমানা</th>
+                            <th class="center-text">স্থায়ী আমানত হিসাব খোলা ফি</th>
+                            <th class="center-text">স্থায়ী আমানত জমা</th>
+                            <th class="center-text">স্থায়ী আমানত জরিমানা</th>
+                            <th class="center-text">অন্যান্য</th>
+                            <th class="center-text">সর্বমোট</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Expense List Table -->
+        <div id="expenseList" class="mb-4">
+            <h3 class="mb-3">ব্যয়ের বিস্তারিত তালিকা</h3>
+            <div class="table-responsive">
+                <table id="detailedExpenseTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="center-text">তারিখ ও সময়</th>
+                            <th class="sticky center-text">রশিদ নং</th>
+                            <th class="center-text">সদস্য/হিসাব নং</th>
+                            <th class="center-text">সদস্যের/হিসাবীর নাম</th>
+                            <th class="center-text">শেয়ার ফেরত</th>
+                            <th class="center-text">সঞ্চয় উত্তোলন</th>
+                            <th class="center-text">ঋণদান</th>
+                            <th class="center-text">স্টেশনারী খরচ</th>
+                            <th class="center-text">মিটিং খরচ</th>
+                            <th class="center-text">যাতায়াত খরচ</th>
+                            <th class="center-text">ডিপিএস উত্তোলন</th>
+                            <th class="center-text">ডিপিএস লাভ বিতরণ</th>
+                            <th class="center-text">স্থায়ী আমানত উত্তোলন</th>
+                            <th class="center-text">স্থায়ী আমানত লাভ বিতরণ</th>
+                            <th class="center-text">বেতন</th>
+                            <th class="center-text">অফিস ভাড়া</th>
+                            <th class="center-text">বিদ্যুৎ বিল</th>
+                            <th class="center-text">সম্মানী ভাতা</th>
+                            <th class="center-text">অফিস আপ্যায়ন</th>
+                            <th class="center-text">রক্ষণাবেক্ষণ</th>
+                            <th class="center-text">আসবাবপত্র</th>
+                            <th class="center-text">অন্যান্য</th>
+                            <th class="center-text">সর্বমোট</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Hidden PDF Content -->
+        <div class="pdf-content" id="pdfContent">
+            <div class="pdf-header">
+                <h3 id="pdfReportTitle">রিপোর্ট<br>লেনদেন</h3>
+            </div>
+            <div class="pdf-tables">
+                <div class="pdf-income">
+                    <h4>আয়ের তালিকা</h4>
+                    <table id="pdfIncomeTable">
+                        <thead>
+                            <tr>
+                                <th>আয়ের ধরণ</th>
+                                <th>সর্বমোট পরিমাণ</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="pdf-expense">
+                    <h4>ব্যয়ের তালিকা</h4>
+                    <table id="pdfExpenseTable">
+                        <thead>
+                            <tr>
+                                <th>ব্যয়ের ধরণ</th>
+                                <th>সর্বমোট পরিমাণ</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="pdf-balance">
+                <h4>হাতে নগদ/Cash Balance</h4>
+                <table id="pdfBalanceTable">
+                    <thead>
+                        <tr>
+                            <th>বিবরণ</th>
+                            <th>পরিমাণ</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="api.js"></script>
+    <script>
+    const { jsPDF } = window.jspdf;
+    let employeeNames = [];
+
+    // Format date to YYYY-MM-DD HH:MM:SS
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
+    // Fetch employee names
+    async function fetchEmployeeNames() {
+        try {
+            const response = await fetch(`${SCRIPT_URL}?action=getEmployeeNames`);
+            const data = await response.json();
+            console.log('Employee Names:', data); // Debug log
+            if (data.status === 'success') {
+                employeeNames = data.data;
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching employee names:', error);
+        }
+    }
+
+    // Fetch receipts and generate report
+    async function generateReport() {
+        const errorMessage = document.getElementById('errorMessage');
+        const reportMaster = document.querySelector('.report-master');
+        const reportTitle = document.getElementById('reportTitle');
+        const pdfReportTitle = document.getElementById('pdfReportTitle');
+        const generatePDFButton = document.getElementById('generatePDFButton');
+        errorMessage.style.display = 'none';
+        reportMaster.style.display = 'none';
+        generatePDFButton.disabled = true;
+
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if (!startDate || !endDate) {
+            errorMessage.textContent = 'দয়া করে শুরু এবং শেষ তারিখ নির্বাচন করুন';
+            errorMessage.style.display = 'block';
+            return;
+        }
+
+        try {
+            // Update report headers
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const titleText = `রিপোর্ট<br>${formatDate(start)} – ${formatDate(end)}`;
+            reportTitle.innerHTML = titleText;
+            pdfReportTitle.innerHTML = titleText;
+
+            // Fetch receipts before startDate for opening balance
+            const earliestDate = '2000-01-01T00:00:00'; // Arbitrary early date
+            const openingResponse = await fetch(`${SCRIPT_URL}?action=getReceipts&startDate=${encodeURIComponent(earliestDate)}&endDate=${encodeURIComponent(startDate)}`);
+            const openingData = await openingResponse.json();
+            console.log('Opening Balance Receipts:', openingData); // Debug log
+            if (openingData.status !== 'success') {
+                throw new Error(openingData.message);
+            }
+
+            let openingBalance = 0;
+            const openingReceipts = openingData.data;
+
+            // Define income and expense column mappings (with Unicode fix)
+            const incomeColumns = {
+                'শেয়ার জমা': 4,
+                'শেয়ার জমা': 4,
+                'শেয়ার জরিমানা': 5,
+                'শেয়ার জরিমানা': 5,
+                'সঞ্চয় জমা': 6,
+                'সঞ্চয় জমা': 6,
+                'সঞ্চয় জরিমানা': 7,
+                'সঞ্চয় জরিমানা': 7,
+                'ঋণ ফেরত': 8,
+                'ঋণের মুনাফা/সেবামূল্য': 9,
+                'ঋণের জরিমানা': 10,
+                'ঋণ ফর্ম বিক্রয়': 11,
+                'ভর্তি ফি': 12,
+                'ডিপিএস হিসাব খোলা ফি': 13,
+                'ডিপিএস জমা': 14,
+                'ডিপিএস জরিমানা': 15,
+                'স্থায়ী আমানত হিসাব খোলা ফি': 16,
+                'স্থায়ী আমানত জমা': 17,
+                'স্থায়ী আমানত জরিমানা': 18
+            };
+            const expenseColumns = {
+                'শেয়ার ফেরত': 4,
+                'শেয়ার ফেরত': 4,
+                'সঞ্চয় উত্তোলন': 5,
+                'সঞ্চয় উত্তোলন': 5,
+                'ঋণদান': 6,
+                'স্টেশনারী খরচ': 7,
+                'মিটিং খরচ': 8,
+                'যাতায়াত খরচ': 9,
+                'ডিপিএস উত্তোলন': 10,
+                'ডিপিএস লাভ বিতরণ': 11,
+                'স্থায়ী আমানত উত্তোলন': 12,
+                'স্থায়ী আমানত লাভ বিতরণ': 13,
+                'বেতন': 14,
+                'অফিস ভাড়া': 15,
+                'বিদ্যুৎ বিল': 16,
+                'সম্মানী ভাতা': 17,
+                'অফিস আপ্যায়ন': 18,
+                'রক্ষণাবেক্ষণ': 19,
+                'আসবাবপত্র': 20
+            };
+
+            // Calculate opening balance
+            openingReceipts.forEach(receipt => {
+                const isIncome = employeeNames.includes(receipt.collectorName);
+                const isExpense = employeeNames.includes(receipt.payerName);
+                const transactionDetails = receipt.transactionDetails || [];
+                transactionDetails.forEach(detail => {
+                    const amount = parseFloat(detail.amount) || 0;
+                    if (isIncome) {
+                        openingBalance += amount;
+                    }
+                    if (isExpense) {
+                        openingBalance -= amount;
+                    }
+                });
+            });
+            console.log('Opening Balance:', openingBalance); // Debug log
+
+            // Fetch receipts within selected time frame
+            console.log('Fetching receipts with:', { startDate, endDate }); // Debug log
+            const response = await fetch(`${SCRIPT_URL}?action=getReceipts&startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`);
+            const data = await response.json();
+            console.log('API Response:', data); // Debug log
+            if (data.status !== 'success') {
+                throw new Error(data.message);
+            }
+
+            const receipts = data.data;
+            console.log('Receipts:', receipts); // Debug log
+
+            // Initialize income and expense aggregations
+            const incomeByType = {};
+            const expenseByType = {};
+            let totalIncome = 0;
+            let totalExpense = 0;
+
+            // Initialize detailed income and expense table bodies
+            const incomeTableBody = document.querySelector('#detailedIncomeTable tbody');
+            const expenseTableBody = document.querySelector('#detailedExpenseTable tbody');
+            incomeTableBody.innerHTML = '';
+            expenseTableBody.innerHTML = '';
+
+            // Process receipts
+            receipts.forEach(receipt => {
+                const isIncome = employeeNames.includes(receipt.collectorName);
+                const isExpense = employeeNames.includes(receipt.payerName);
+                const transactionDetails = receipt.transactionDetails || [];
+
+                if (isIncome) {
+                    // Process income details
+                    const incomeRow = new Array(21).fill('');
+                    incomeRow[0] = receipt.dateTime;
+                    incomeRow[1] = receipt.receiptNumber || 'N/A';
+                    incomeRow[2] = receipt.memberNumber || 'N/A';
+                    incomeRow[3] = receipt.memberName || 'N/A';
+                    let rowTotal = 0;
+
+                    transactionDetails.forEach(detail => {
+                        const type = detail.type || 'Unknown';
+                        const amount = parseFloat(detail.amount) || 0;
+                        incomeByType[type] = (incomeByType[type] || 0) + amount;
+                        totalIncome += amount;
+                        const colIndex = incomeColumns[type];
+                        if (colIndex !== undefined) {
+                            incomeRow[colIndex] = amount.toFixed(2);
+                            rowTotal += amount;
+                        } else {
+                            incomeRow[19] = (incomeRow[19] ? incomeRow[19] + ', ' : '') + `${type} = ${amount.toFixed(2)}`;
+                            rowTotal += amount;
+                        }
+                    });
+
+                    incomeRow[20] = rowTotal.toFixed(2);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = incomeRow.map((val, idx) => `<td${idx === 1 ? ' class="sticky center-text"' : ' class="center-text"'}>${val}</td>`).join('');
+                    incomeTableBody.appendChild(tr);
+                }
+
+                if (isExpense) {
+                    // Process expense details
+                    const expenseRow = new Array(23).fill('');
+                    expenseRow[0] = receipt.dateTime;
+                    expenseRow[1] = receipt.receiptNumber || 'N/A';
+                    expenseRow[2] = receipt.memberNumber || 'N/A';
+                    expenseRow[3] = receipt.memberName || 'N/A';
+                    let rowTotal = 0;
+
+                    transactionDetails.forEach(detail => {
+                        const type = detail.type || 'Unknown';
+                        const amount = parseFloat(detail.amount) || 0;
+                        expenseByType[type] = (expenseByType[type] || 0) + amount;
+                        totalExpense += amount;
+                        const colIndex = expenseColumns[type];
+                        if (colIndex !== undefined) {
+                            expenseRow[colIndex] = amount.toFixed(2);
+                            rowTotal += amount;
+                        } else {
+                            expenseRow[21] = (expenseRow[21] ? expenseRow[21] + ', ' : '') + `${type} = ${amount.toFixed(2)}`;
+                            rowTotal += amount;
+                        }
+                    });
+
+                    expenseRow[22] = rowTotal.toFixed(2);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = expenseRow.map((val, idx) => `<td${idx === 1 ? ' class="sticky center-text"' : ' class="center-text"'}>${val}</td>`).join('');
+                    expenseTableBody.appendChild(tr);
+                }
+            });
+
+            // Append total row for income table
+            const incomeTotalRow = document.createElement('tr');
+            incomeTotalRow.className = 'total-row';
+            incomeTotalRow.innerHTML = `<td colspan="20" class="center-text" style="font-weight: bold;">সর্বমোট</td><td class="center-text" style="font-weight: bold;">${totalIncome.toFixed(2)}</td>`;
+            incomeTableBody.appendChild(incomeTotalRow);
+
+            // Append total row for expense table
+            const expenseTotalRow = document.createElement('tr');
+            expenseTotalRow.className = 'total-row';
+            expenseTotalRow.innerHTML = `<td colspan="22" class="center-text" style="font-weight: bold;">সর্বমোট</td><td class="center-text" style="font-weight: bold;">${totalExpense.toFixed(2)}</td>`;
+            expenseTableBody.appendChild(expenseTotalRow);
+
+            // Populate income summary table
+            const incomeSummaryTableBody = document.querySelector('#incomeTable tbody');
+            const pdfIncomeTableBody = document.querySelector('#pdfIncomeTable tbody');
+            incomeSummaryTableBody.innerHTML = '';
+            pdfIncomeTableBody.innerHTML = '';
+            for (const [type, amount] of Object.entries(incomeByType)) {
+                const rowHTML = `<td>${type}</td><td>${amount.toFixed(2)}</td>`;
+                const row = document.createElement('tr');
+                row.innerHTML = rowHTML;
+                incomeSummaryTableBody.appendChild(row);
+                const pdfRow = document.createElement('tr');
+                pdfRow.innerHTML = rowHTML;
+                pdfIncomeTableBody.appendChild(pdfRow);
+            }
+            const incomeSummaryTotalRow = document.createElement('tr');
+            incomeSummaryTotalRow.className = 'total-row';
+            incomeSummaryTotalRow.innerHTML = `<td>মোট আয়</td><td>${totalIncome.toFixed(2)}</td>`;
+            incomeSummaryTableBody.appendChild(incomeSummaryTotalRow);
+            const pdfIncomeSummaryTotalRow = document.createElement('tr');
+            pdfIncomeSummaryTotalRow.className = 'total-row';
+            pdfIncomeSummaryTotalRow.innerHTML = `<td>মোট আয়</td><td>${totalIncome.toFixed(2)}</td>`;
+            pdfIncomeTableBody.appendChild(pdfIncomeSummaryTotalRow);
+
+            // Populate expense summary table
+            const expenseSummaryTableBody = document.querySelector('#expenseTable tbody');
+            const pdfExpenseTableBody = document.querySelector('#pdfExpenseTable tbody');
+            expenseSummaryTableBody.innerHTML = '';
+            pdfExpenseTableBody.innerHTML = '';
+            for (const [type, amount] of Object.entries(expenseByType)) {
+                const rowHTML = `<td>${type}</td><td>${amount.toFixed(2)}</td>`;
+                const row = document.createElement('tr');
+                row.innerHTML = rowHTML;
+                expenseSummaryTableBody.appendChild(row);
+                const pdfRow = document.createElement('tr');
+                pdfRow.innerHTML = rowHTML;
+                pdfExpenseTableBody.appendChild(pdfRow);
+            }
+            const expenseSummaryTotalRow = document.createElement('tr');
+            expenseSummaryTotalRow.className = 'total-row';
+            expenseSummaryTotalRow.innerHTML = `<td>মোট ব্যয়</td><td>${totalExpense.toFixed(2)}</td>`;
+            expenseSummaryTableBody.appendChild(expenseSummaryTotalRow);
+            const pdfExpenseSummaryTotalRow = document.createElement('tr');
+            pdfExpenseSummaryTotalRow.className = 'total-row';
+            pdfExpenseSummaryTotalRow.innerHTML = `<td>মোট ব্যয়</td><td>${totalExpense.toFixed(2)}</td>`;
+            pdfExpenseTableBody.appendChild(pdfExpenseSummaryTotalRow);
+
+            // Populate cash balance table
+            const currentBalance = openingBalance + totalIncome - totalExpense;
+            const balanceTableBody = document.querySelector('#balanceTable tbody');
+            const pdfBalanceTableBody = document.querySelector('#pdfBalanceTable tbody');
+            const balanceHTML = `
+                <tr><td>প্রারম্ভিক নগদ (${formatDate(start)} এর আগে)</td><td>${openingBalance.toFixed(2)}</td></tr>
+                <tr><td>মোট আয় (${formatDate(start)} থেকে ${formatDate(end)})</td><td>${totalIncome.toFixed(2)}</td></tr>
+                <tr><td>মোট ব্যয় (${formatDate(start)} থেকে ${formatDate(end)})</td><td>${totalExpense.toFixed(2)}</td></tr>
+                <tr class="total-row"><td>হাতে নগদ (${formatDate(end)})</td><td>${currentBalance.toFixed(2)}</td></tr>
+            `;
+            balanceTableBody.innerHTML = balanceHTML;
+            pdfBalanceTableBody.innerHTML = balanceHTML;
+
+            // Show report and enable PDF button
+            reportMaster.style.display = 'block';
+            generatePDFButton.disabled = false;
+        } catch (error) {
+            console.error('Error generating report:', error);
+            errorMessage.textContent = 'রিপোর্ট তৈরি করতে ব্যর্থ: ' + error.message;
+            errorMessage.style.display = 'block';
+        }
+    }
+
+    // Generate PDF
+    async function generatePDF() {
+        const pdfContent = document.getElementById('pdfContent');
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        // Sanitize date for filename
+        const startStr = formatDate(start).replace(/[:\s]/g, '_');
+        const endStr = formatDate(end).replace(/[:\s]/g, '_');
+        const fileName = `Transaction_Report_${startStr}_to_${endStr}.pdf`;
+
+        try {
+            // Temporarily show pdfContent for rendering
+            pdfContent.style.display = 'block';
+            const canvas = await html2canvas(pdfContent, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                logging: true,
+                width: pdfContent.scrollWidth,
+                height: pdfContent.scrollHeight
+            });
+            console.log('Canvas created:', canvas);
+
+            // Add delay to ensure rendering
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const imgWidth = 210;
+            const pageHeight = 297;
+            const imgHeight = canvas.height * imgWidth / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            // Save the PDF with dynamic filename
+            pdf.save(fileName);
+
+            // Hide pdfContent after rendering
+            pdfContent.style.display = 'none';
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            alert('PDF তৈরি করতে ব্যর্থ: ' + error.message);
+            pdfContent.style.display = 'none';
+        }
+    }
+
+    // Load employee names on page load
+    fetchEmployeeNames();
+</script>
+</body>
+</html>

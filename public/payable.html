@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payable Amount Calculation</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .navbar {
+      margin-bottom: 20px;
+    }
+    .card {
+      margin-bottom: 20px;
+    }
+    .form-label {
+      font-weight: bold;
+    }
+    #payableAmount {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #dc3545; /* Red color for emphasis */
+    }
+    /* Custom styles for smaller screens */
+    @media (max-width: 768px) {
+      .form-label, .form-control {
+        font-size: 0.85rem;
+      }
+      #payableAmount {
+        font-size: 1.25rem;
+      }
+    }
+    @media (max-width: 576px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+      .form-label, .form-control {
+        font-size: 0.75rem;
+      }
+      #payableAmount {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">জনসেবা কো-অপারেটিভ</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">ড্যাশবোর্ড</a></li>
+          <li class="nav-item"><a class="nav-link" href="members.html">সদস্য তালিকা</a></li>
+          <li class="nav-item"><a class="nav-link" href="ledger.html">লেজার দেখুন</a></li>
+          <li class="nav-item"><a class="nav-link" href="dpsFixedDepositLedger.html">ডিপিএস ও স্থায়ী আমানত লেজার</a></li>
+          <li class="nav-item"><a class="nav-link" href="receipt.html">রশিদ দেখুন</a></li>
+          <li class="nav-item active"><a class="nav-link active" href="payable.html">পরিশোধযোগ্য পরিমাণ হিসাব করুন</a></li>
+          <li class="nav-item"><a class="nav-link" href="externalIncomeExpenses.html">বাহ্যিক আয়-ব্যয় দেখুন</a></li>
+          <li class="nav-item"><a class="nav-link" href="reportGenerator.html">রিপোর্ট তৈরি করুন</a></li>
+          <li class="nav-item"><a class="nav-link" href="employeeCollectionReport.html">কর্মীর লেনদেন রিপোর্ট দেখুন</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 class="text-center mb-4">Payable Amount Calculation</h1>
+    <div class="mb-3 d-flex flex-column flex-md-row gap-2">
+      <input type="text" id="memberNumber" class="form-control" placeholder="Enter Member Number">
+      <input type="date" id="currentDate" class="form-control" value="2025-06-03">
+      <button class="btn btn-primary" onclick="calculatePayableAmount()">Calculate</button>
+    </div>
+
+    <div class="card" id="calculationCard" style="display: none;">
+      <div class="card-body">
+        <h5 class="card-title">Calculation Details</h5>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Last Transaction Date:</label>
+            <p id="lastTransactionDate" class="form-text"></p>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Selected Date:</label>
+            <p id="selectedDate" class="form-text"></p>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="shareDeposit" class="form-label">Share Deposit:</label>
+            <input type="number" id="shareDeposit" class="form-control amount-field" step="0.01" min="0">
+          </div>
+          <div class="col-md-6">
+            <label for="sharePenalty" class="form-label">Share Penalty:</label>
+            <input type="number" id="sharePenalty" class="form-control amount-field" step="0.01" min="0">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="savingsDeposit" class="form-label">Savings Deposit:</label>
+            <input type="number" id="savingsDeposit" class="form-control amount-field" step="0.01" min="0">
+          </div>
+          <div class="col-md-6">
+            <label for="savingsPenalty" class="form-label">Savings Penalty:</label>
+            <input type="number" id="savingsPenalty" class="form-control amount-field" step="0.01" min="0">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="loanRepaid" class="form-label">Loan Repaid:</label>
+            <input type="number" id="loanRepaid" class="form-control amount-field" step="0.01" min="0">
+          </div>
+          <div class="col-md-6">
+            <label for="loanInterest" class="form-label">Loan Interest:</label>
+            <input type="number" id="loanInterest" class="form-control amount-field" step="0.01" min="0">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="loanPenalty" class="form-label">Loan Penalty:</label>
+            <input type="number" id="loanPenalty" class="form-control amount-field" step="0.01" min="0">
+          </div>
+        </div>
+        <div class="text-center">
+          <label class="form-label">Payable Amount:</label>
+          <p id="payableAmount">0.00</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="api.js"></script>
+  <script>
+    async function calculatePayableAmount() {
+  const memberNumber = $('#memberNumber').val().trim();
+  const currentDate = $('#currentDate').val();
+
+  if (!memberNumber) {
+    alert('Please enter a member number');
+    return;
+  }
+  if (!currentDate) {
+    alert('Please select a current date');
+    return;
+  }
+
+  try {
+    // Fetch the latest transaction for the member
+    const response = await fetch(`${SCRIPT_URL}?action=getLedger&memberNumber=${memberNumber}`);
+    const result = await response.json();
+
+    if (result.status !== 'success') {
+      alert(result.message);
+      $('#calculationCard').hide();
+      return;
+    }
+
+    if (result.data.length === 0) {
+      alert('No transactions found for this member.');
+      $('#calculationCard').hide();
+      return;
+    }
+
+    // Get the last transaction
+    const lastTx = result.data[result.data.length - 1];
+    const lastTxDate = new Date(lastTx.transactionDateTime);
+    const selectedDate = new Date(currentDate);
+
+    // Display dates
+    $('#lastTransactionDate').text(lastTxDate.toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' }));
+    $('#selectedDate').text(selectedDate.toLocaleString('en-US', { dateStyle: 'short' }));
+
+    // Calculate months difference considering years
+    const lastTxYear = lastTxDate.getFullYear();
+    const selectedYear = selectedDate.getFullYear();
+    const lastTxMonth = lastTxDate.getMonth(); // 0-11
+    const selectedMonth = selectedDate.getMonth(); // 0-11
+
+    // Calculate total months difference
+    let monthsDiff = (selectedYear - lastTxYear) * 12 + (selectedMonth - lastTxMonth);
+
+    // Ensure monthsDiff is not negative
+    monthsDiff = Math.max(0, monthsDiff - 1); // Subtract 1 to exclude the current month
+
+    // Calculate Share Deposit
+    const shareDeposit = parseFloat(lastTx.shareDeposit) || 0;
+    $('#shareDeposit').val(shareDeposit.toFixed(2));
+
+    // Calculate Share Penalty
+    const sharePenalty = monthsDiff * 10;
+    $('#sharePenalty').val(sharePenalty.toFixed(2));
+
+    // Calculate Savings Deposit
+    const savingsDeposit = parseFloat(lastTx.savingsDeposit) || 0;
+    $('#savingsDeposit').val(savingsDeposit.toFixed(2));
+
+    // Calculate Savings Penalty
+    const savingsPenalty = monthsDiff * 10;
+    $('#savingsPenalty').val(savingsPenalty.toFixed(2));
+
+    // Calculate Loan Repaid
+    let loanRepaid = 0;
+    if (parseFloat(lastTx.loanRepaid) === 0) {
+      loanRepaid = (parseFloat(lastTx.remainingLoan) || 0) / 11;
+    } else {
+      loanRepaid = parseFloat(lastTx.loanRepaid) || 0;
+    }
+    $('#loanRepaid').val(loanRepaid.toFixed(2));
+
+    // Calculate Loan Interest
+    let loanInterest = 0;
+    if (parseFloat(lastTx.loanInterest) === 0) {
+      loanInterest = (parseFloat(lastTx.remainingInterest) || 0) / 11;
+    } else {
+      loanInterest = parseFloat(lastTx.loanInterest) || 0;
+    }
+    $('#loanInterest').val(loanInterest.toFixed(2));
+
+    // Calculate Loan Penalty
+    let loanInterestForPenalty = loanInterest; // Use the calculated loan interest
+    const loanPenalty = monthsDiff * (loanInterestForPenalty + (loanInterestForPenalty / 2));
+    $('#loanPenalty').val(loanPenalty.toFixed(2));
+
+    // Show the calculation card
+    $('#calculationCard').show();
+
+    // Calculate initial payable amount
+    updatePayableAmount();
+
+  } catch (error) {
+    console.error('Error calculating payable amount:', error);
+    alert('Failed to fetch data. Please try again.');
+    $('#calculationCard').hide();
+  }
+}
+
+    // Function to update payable amount whenever an amount field changes
+    function updatePayableAmount() {
+      const shareDeposit = parseFloat($('#shareDeposit').val()) || 0;
+      const sharePenalty = parseFloat($('#sharePenalty').val()) || 0;
+      const savingsDeposit = parseFloat($('#savingsDeposit').val()) || 0;
+      const savingsPenalty = parseFloat($('#savingsPenalty').val()) || 0;
+      const loanRepaid = parseFloat($('#loanRepaid').val()) || 0;
+      const loanInterest = parseFloat($('#loanInterest').val()) || 0;
+      const loanPenalty = parseFloat($('#loanPenalty').val()) || 0;
+
+      const payableAmount = shareDeposit + sharePenalty + savingsDeposit + savingsPenalty + loanRepaid + loanInterest + loanPenalty;
+      $('#payableAmount').text(payableAmount.toFixed(2));
+    }
+
+    // Add event listeners to amount fields for real-time updates
+    $(document).ready(function() {
+      $('.amount-field').on('input', updatePayableAmount);
+    });
+  </script>
+</body>
+</html>

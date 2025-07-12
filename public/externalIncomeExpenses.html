@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>External Income & Expenses</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            background-color: #e9ecef;
+            color: #495057;
+            border-top-left-radius: 0.25rem;
+            border-top-right-radius: 0.25rem;
+            margin-right: 2px;
+        }
+        .tab.active {
+            background-color: #fff;
+            border-color: #dee2e6 #dee2e6 #fff;
+            color: #495057;
+        }
+        .table-container {
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            overflow: hidden; /* Ensures sticky elements are clipped properly */
+            max-height: 500px; /* Optional: Limit table height for vertical scroll */
+            overflow-x: auto; /* For horizontal scrolling */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0; /* Remove default table margin */
+        }
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: left;
+            font-size: 0.9rem;
+            white-space: nowrap; /* Prevent wrapping for better sticky effect */
+        }
+        th {
+            background-color: #e9ecef;
+            position: sticky;
+            top: 0;
+            z-index: 2; /* Ensure header stays above sticky column */
+        }
+        .details-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+        .details-btn:hover {
+            background-color: #0056b3;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1050; /* Bootstrap modal z-index */
+            overflow: auto;
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 0.3rem;
+            position: relative;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+        .close:hover {
+            color: black;
+        }
+
+        /* Sticky column styles */
+        .sticky-column {
+            position: sticky;
+            left: 0;
+            background-color: #fff; /* Ensure background is visible */
+            z-index: 1; /* Ensure it stays above other cells */
+            box-shadow: 2px 0 2px -1px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for better visibility */
+        }
+        /* Sticky header for the sticky column */
+        th.sticky-column {
+            z-index: 3; /* Ensure first column header stays above all */
+            background-color: #e9ecef; /* Match the table header background */
+        }
+
+        /* Custom styles for smaller screens */
+        @media (max-width: 768px) {
+            .table th, .table td {
+                font-size: 0.75rem;
+            }
+            .details-btn {
+                padding: 3px 6px;
+                font-size: 0.7rem;
+            }
+            .navbar-nav .nav-link {
+                padding: 0.5rem 1rem;
+            }
+        }
+        @media (max-width: 576px) {
+            h2 {
+                font-size: 1.5rem;
+            }
+            .table th, .table td {
+                font-size: 0.65rem;
+            }
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">জনসেবা কো-অপারেটিভ</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+          																					 <li class="nav-item"><a class="nav-link" href="index.html">ড্যাশবোর্ড</a></li>
+                    <li class="nav-item"><a class="nav-link" href="members.html">সদস্য তালিকা</a></li>
+                    <li class="nav-item"><a class="nav-link" href="ledger.html">লেজার দেখুন</a></li>
+                    <li class="nav-item"><a class="nav-link" href="receipt.html">রশিদ দেখুন</a></li>
+          																								<li class="nav-item"><a class="nav-link" href="dpsFixedDepositLedger.html">ডিপিএস ও স্থায়ী আমানত লেজার</a></li>
+                    <li class="nav-item"><a class="nav-link" href="payable.html">পরিশোধযোগ্য পরিমাণ হিসাব করুন</a></li>
+                    <li class="nav-item active"><a class="nav-link active" href="externalIncomeExpenses.html">বাহ্যিক আয়-ব্যয় দেখুন</a></li>
+                    <li class="nav-item"><a class="nav-link" href="reportGenerator.html">রিপোর্ট তৈরি করুন</a></li>
+                    <li class="nav-item"><a class="nav-link" href="employeeCollectionReport.html">কর্মীর লেনদেন রিপোর্ট দেখুন</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>External Income & Expenses</h2>
+        <div class="tabs">
+            <div class="tab active" onclick="showTable(event, 'income')">আয়ের তালিকা</div>
+            <div class="tab" onclick="showTable(event, 'expense')">ব্যয়ের তালিকা</div>
+        </div>
+        <div class="table-container">
+            <div id="incomeTable">
+                <table class="table table-striped table-bordered" id="incomeDataTable">
+                    <thead>
+                        <tr>
+                            <th class="sticky-column">তারিখ ও সময়</th>
+                            <th>S.N.</th>
+                            <th>ধরণ</th>
+                            <th>পরিমাণ</th>
+                            <th>প্রদানকারীর নাম</th>
+                            <th>আদায়কারীর নাম</th>
+                            <th>রশিদ নং</th>
+                            <th>বিস্তারিত</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div id="expenseTable" style="display: none;">
+                <table class="table table-striped table-bordered" id="expenseDataTable">
+                    <thead>
+                        <tr>
+                            <th class="sticky-column">তারিখ ও সময়</th>
+                            <th>S.N.</th>
+                            <th>ধরণ</th>
+                            <th>পরিমাণ</th>
+                            <th>প্রদানকারীর নাম</th>
+                            <th>আদায়কারীর নাম</th>
+                            <th>রশিদ নং</th>
+                            <th>বিস্তারিত</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Transaction Details</h3>
+            <p><strong>Transaction ID:</strong> <span id="modalTransactionId"></span></p>
+            <p><strong>DateTime:</strong> <span id="modalDateTime"></span></p>
+            <p><strong>Type:</strong> <span id="modalType"></span></p>
+            <p><strong>Amount:</strong> <span id="modalAmount"></span></p>
+            <p><strong>Payer Name:</strong> <span id="modalPayerName"></span></p>
+            <p><strong>Collector Name:</strong> <span id="modalCollectorName"></span></p>
+            <p><strong>Description:</strong> <span id="modalDescription"></span></p>
+            <p><strong>Receipt Number:</strong> <span id="modalReceiptNumber"></span></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="api.js"></script>
+    <script>
+        async function fetchTransactions(type) {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getExternalTransactions&type=${type}`);
+                const data = await response.json();
+                if (data.status === 'success') {
+                    const tableBody = document.querySelector(`#${type}DataTable tbody`);
+                    tableBody.innerHTML = '';
+                    data.data.forEach(transaction => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="sticky-column">${transaction.dateTime}</td>
+                            <td>${transaction.transactionId}</td>
+                            <td>${transaction.type}</td>
+                            <td>${transaction.amount}</td>
+                            <td>${transaction.payerName}</td>
+                            <td>${transaction.collectorName}</td>
+                            <td>${transaction.receiptNumber}</td>
+                            <td><button class="details-btn" onclick="showDetails('${transaction.transactionId}', '${transaction.dateTime}', '${transaction.type}', '${transaction.amount}', '${transaction.payerName}', '${transaction.collectorName}', '${transaction.description}', '${transaction.receiptNumber}')">See</button></td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    console.error('Failed to fetch transactions:', data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching transactions:', error);
+            }
+        }
+
+        function showTable(event, type) {
+            document.getElementById('incomeTable').style.display = type === 'income' ? 'block' : 'none';
+            document.getElementById('expenseTable').style.display = type === 'expense' ? 'block' : 'none';
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            fetchTransactions(type);
+        }
+
+        function showDetails(transactionId, dateTime, type, amount, payerName, collectorName, description, receiptNumber) {
+            document.getElementById('modalTransactionId').textContent = transactionId;
+            document.getElementById('modalDateTime').textContent = dateTime;
+            document.getElementById('modalType').textContent = type;
+            document.getElementById('modalAmount').textContent = amount;
+            document.getElementById('modalPayerName').textContent = payerName;
+            document.getElementById('modalCollectorName').textContent = collectorName;
+            document.getElementById('modalDescription').textContent = description || 'N/A';
+            document.getElementById('modalReceiptNumber').textContent = receiptNumber;
+            document.getElementById('detailsModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('detailsModal').style.display = 'none';
+        }
+
+        // Load income transactions by default
+        fetchTransactions('income');
+    </script>
+</body>
+</html>
