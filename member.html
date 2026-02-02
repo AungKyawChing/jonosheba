@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Member Database View</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        /* ফাইল কার্ড স্টাইল */
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .file-card {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-card:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .file-card.active {
+            background: #2ecc71;
+            color: white;
+            border-color: #27ae60;
+        }
+
+        /* ডাটা সেকশন */
+        .data-section {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* সামারি বক্স */
+        .summary-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #3498db;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-item h4 {
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .summary-item p {
+            margin: 5px 0 0;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        /* টেবিল স্টাইল */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            border: 1px solid #eee;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        tr:hover {
+            background: #f1f1f1;
+        }
+
+        .loader {
+            display: none;
+            font-weight: bold;
+            color: #3498db;
+            margin: 20px 0;
+        }
+
+        .btn-add {
+            text-decoration: none;
+            background: #2ecc71;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            float: right;
+        }
+
+
+
+        /* THEAD: উপরে sticky */
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #3498db;
+            /* header এর ব্যাকগ্রাউন্ড */
+        }
+
+        /* THEAD-এর প্রথম কলাম (sticky + higher z-index) */
+        thead tr:first-child th:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 15;
+            /* thead-এর বাকি অংশের চেয়ে উপরে */
+            background-color: #3498db;
+        }
+
+        /* TBODY-এর প্রথম কলাম (sticky) */
+        tbody td:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            /* thead-এর নিচে, কিন্তু tbody-এর বাকি অংশের উপরে */
+        }
+
+        /* Even/Odd সারির প্রথম কলামের ব্যাকগ্রাউন্ড */
+        tbody tr:nth-child(even) td:first-child {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:nth-child(odd) td:first-child {
+            background-color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="memberAdd.html" class="btn-add">+ নতুন সদস্য যোগ করুন</a>
+    <h2>সদস্য ডাটাবেস এক্সপ্লোরার</h2>
+
+    <div id="statusMessage">ফাইল তালিকা লোড হচ্ছে...</div>
+    <div id="fileListContainer" class="file-list"></div>
+    <div id="LedgerDisplayArea" class="data-section"></div>
+    <div id="dataDisplayArea" class="data-section">
+        <h3 id="selectedFileName">ফাইল রিপোর্ট</h3>
+
+        <div class="summary-container">
+            <div class="summary-item">
+                <h4>মোট শেয়ার</h4>
+                <p id="sumShare">0</p>
+            </div>
+            <div class="summary-item">
+                <h4>মোট সঞ্চয়</h4>
+                <p id="sumSavings">0</p>
+            </div>
+            <div class="summary-item">
+                <h4>মোট ঋণ (বাকি)</h4>
+                <p id="sumLoan" style="color: #e74c3c;">0</p>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="memberTable">
+                <thead>
+                    <tr>
+                        <th>সদস্য নং</th>
+                        <th>নাম</th>
+                        <th>মোট শেয়ার</th>
+                        <th>মোট সঞ্চয়</th>
+                        <th>ঋণ স্থিতি</th>
+                        <th>মুনাফা স্থিতি</th>
+                    </tr>
+                </thead>
+                <tbody id="memberTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <script src="API.js"></script>
+    <script src="getRequest.js"></script>
+    <script src="customerLedgerGenerator.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', loadFileList);
+
+        /**
+         * ১. ফাইল তালিকা লোড করা (universalGetRequest ব্যবহার করে)
+         */
+        async function loadFileList() {
+            const statusEl = document.getElementById('statusMessage');
+            const container = document.getElementById('fileListContainer');
+
+            try {
+                const res = await universalGetRequest('getMemberFileList');
+
+                if (res.status === "success") {
+                    container.innerHTML = "";
+                    res.data.forEach(fileName => {
+                        const card = document.createElement('div');
+                        card.className = 'file-card';
+                        card.innerText = fileName;
+                        card.onclick = () => selectFile(card, fileName);
+                        container.appendChild(card);
+                    });
+                    statusEl.style.display = 'none';
+                } else {
+                    statusEl.innerText = "Error: " + res.message;
+                }
+            } catch (err) {
+                statusEl.innerText = "ফাইল লোড করতে সমস্যা হয়েছে।";
+            }
+        }
+
+        /**
+         * কার্ড সিলেকশন এবং ডাটা কল করার হ্যান্ডলার
+         */
+        function selectFile(cardElement, fileName) {
+            // একটিভ ক্লাস ম্যানেজমেন্ট
+            document.querySelectorAll('.file-card').forEach(c => c.classList.remove('active'));
+            cardElement.classList.add('active');
+
+            // ডাটা ফেচ করা শুরু
+            fetchMemberData(fileName);
+        }
+
+        /**
+         * ২. নির্দিষ্ট ফাইলের ডাটা লোড করা (universalGetRequest ব্যবহার করে)
+         */
+        async function fetchMemberData(fileName) {
+            const statusEl = document.getElementById('statusMessage');
+            const displayArea = document.getElementById('dataDisplayArea');
+
+            statusEl.innerText = `ফাইল ${fileName} থেকে ডাটা পড়া হচ্ছে...`;
+            statusEl.style.display = 'block';
+            displayArea.style.display = 'none';
+
+            try {
+                // params অবজেক্টে fileName পাঠিয়ে রিকোয়েস্ট
+                const res = await universalGetRequest('getMemberSummaryData', { fileName: fileName });
+
+                statusEl.style.display = 'none';
+                if (res.status === "success") {
+                    renderMemberTable(res.data, fileName);
+                } else {
+                    alert("সার্ভার এরর: " + res.message);
+                }
+            } catch (err) {
+                statusEl.style.display = 'none';
+                alert("নেটওয়ার্ক এরর: ডাটা পাওয়া যায়নি।");
+            }
+        }
+
+        /**
+         * ৩. টেবিল এবং সামারি রেন্ডার করা
+         */
+        function renderMemberTable(data, fileName) {
+            document.getElementById('selectedFileName').innerText = `ফাইল রিপোর্ট: ${fileName}`;
+            const tbody = document.getElementById('memberTableBody');
+            tbody.innerHTML = "";
+
+            let totalShare = 0, totalSavings = 0, totalLoan = 0;
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'>কোন ডাটা পাওয়া যায়নি।</td></tr>";
+            } else {
+                data.forEach(member => {
+
+                    // ডাটা অবজেক্ট তৈরি করা যা ফাংশনে প্যারামিটার হিসেবে যাবে
+                    const targetData = {
+                        customerType: "member",
+                        customerNumber: member.memberNo
+                    };
+
+                    // অবজেক্টটিকে স্ট্রিংয়ে রূপান্তর করা যাতে HTML-এ পাস করা যায়
+                    const dataParam = JSON.stringify(targetData).replace(/"/g, '&quot;');
+
+                    const row = `<tr>
+                        <td>
+                            <b style="color: #3498db; cursor: pointer;" onclick="getCustomerLedger(${dataParam})">
+                                ${member.memberNo}
+                            </b>
+                        </td>
+                        <td>${member.memberName}</td>
+                        <td>${(member.totalShare || 0).toLocaleString()}</td>
+                        <td>${(member.totalSavings || 0).toLocaleString()}</td>
+                        <td style="color:red;">${(member.payableLoan || 0).toLocaleString()}</td>
+                        <td>${(member.payableInterest || 0).toLocaleString()}</td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+
+                    // সামারি ক্যালকুলেশন
+                    totalShare += parseFloat(member.totalShare) || 0;
+                    totalSavings += parseFloat(member.totalSavings) || 0;
+                    totalLoan += parseFloat(member.payableLoan) || 0;
+                });
+            }
+
+            // সামারি আপডেট
+            document.getElementById('sumShare').innerText = totalShare.toLocaleString() + " /-";
+            document.getElementById('sumSavings').innerText = totalSavings.toLocaleString() + " /-";
+            document.getElementById('sumLoan').innerText = totalLoan.toLocaleString() + " /-";
+
+            document.getElementById('dataDisplayArea').style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>

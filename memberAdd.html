@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Management - Add New Member</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f7f6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+
+        .section-title {
+            grid-column: 1 / -1;
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #495057;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        input:focus {
+            border-color: #28a745;
+            outline: none;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            margin-top: 25px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #218838;
+        }
+
+        .required { color: red; }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>নতুন সদস্য নিবন্ধন (Member Registration)</h2>
+
+        <form id="memberAddForm">
+            <input type="hidden" name="action" value="addNewMember">
+            
+            <div class="form-grid">
+                <div class="section-title">সদস্যের ব্যক্তিগত তথ্য</div>
+
+                <div class="form-group">
+                    <label>সদস্য নং <span class="required">*</span></label>
+                    <input type="number" name="memberNo" id="memberNo" required placeholder="উদা: 101" value="95">
+                </div>
+
+                <div class="form-group">
+                    <label>সদস্যের নাম <span class="required">*</span></label>
+                    <input type="text" name="memberName" required placeholder="সদস্যের পূর্ণ নাম" value="Shodosho Nam">
+                </div>
+
+                <div class="form-group">
+                    <label>পিতা/স্বামীর নাম</label>
+                    <input type="text" name="fatherName" value="pita or shami nam">
+                </div>
+
+                <div class="form-group">
+                    <label>মোবাইল নম্বর <span class="required">*</span></label>
+                    <input type="tel" name="phone" required placeholder="017xxxxxxxx" value="+88018224678563">
+                </div>
+
+                <div class="form-group">
+                    <label>এনআইডি (NID) নম্বর</label>
+                    <input type="text" name="nid" value="0045325972">
+                </div>
+
+                <div class="form-group">
+                    <label>ইমেইল (যদি থাকে)</label>
+                    <input type="email" name="email" value="member@jonosheba.com">
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>বর্তমান ঠিকানা</label>
+                    <textarea name="address" rows="2" value="Shodosho Thikana"></textarea>
+                </div>
+
+                <div class="section-title">নমিনির তথ্য</div>
+
+                <div class="form-group">
+                    <label>নমিনির নাম</label>
+                    <input type="text" name="nomineeName" value="nominee Nam">
+                </div>
+
+                <div class="form-group">
+                    <label>নমিনির পিতা/স্বামীর নাম</label>
+                    <input type="text" name="nomineeFather" value="nominee Pita or shami nam">
+                </div>
+
+                <div class="form-group">
+                    <label>নমিনির মোবাইল নম্বর</label>
+                    <input type="tel" name="nomineePhone" value="01822327865">
+                </div>
+
+                <div class="form-group">
+                    <label>নমিনির এনআইডি (NID)</label>
+                    <input type="text" name="nomineeNid" value="=-73847602346">
+                </div>
+
+                <div class="form-group">
+                    <label>নমিনির ইমেইল</label>
+                    <input type="email" name="nomineeEmail" value="nominee@gmail.com">
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>নমিনির ঠিকানা</label>
+                    <textarea name="nomineeAddress" rows="2" value="Nominee Thikana"></textarea>
+                </div>
+
+                <div class="section-title">অফিস তথ্য (অপারেটর)</div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>নিবন্ধনকারী (Employee) <span class="required">*</span></label>
+                    <input type="text" name="collector" list="empList" required placeholder="আপনার নাম সিলেক্ট করুন">
+                </div>
+            </div>
+
+            <button type="button" class="submit-btn" onclick="submitMemberForm()">সদস্য হিসেবে যুক্ত করুন</button>
+        </form>
+    </div>
+
+    <datalist id="empList"></datalist>
+
+    <script src="timeFormat.js"></script>
+    <script src="modalBox.js"></script>
+    <script src="API.js"></script>
+    <script src="postRequest.js"></script>
+    <script src="getRequest.js"></script>
+    <script src="getEmployee.js"></script>
+
+    <script>
+        window.onload = function () {
+            loadEmployees();
+        };
+
+        // এমপ্লয়ি লিস্ট লোড করা
+        async function loadEmployees() {
+            const employees = await fetchEmployeeNames();
+            if (employees && employees.length > 0) {
+                const list = document.getElementById('empList');
+                list.innerHTML = '';
+                employees.forEach(name => {
+                    let opt = document.createElement('option');
+                    opt.value = name;
+                    list.appendChild(opt);
+                });
+            }
+        }
+
+        // ফর্ম সাবমিশন হ্যান্ডলার
+        function submitMemberForm() {
+            // ফর্ম ভ্যালিডেশন
+            const form = document.getElementById('memberAddForm');
+            if (!form.checkValidity()) {
+                alert("দয়া করে প্রয়োজনীয় সব ফিল্ড (লাল তারকা চিহ্নিত) পূরণ করুন।");
+                return;
+            }
+
+            // সিক্রেট কোড মডাল ওপেন
+            openModal(async (secretCode) => {
+                const formData = new FormData(form);
+
+                // অতিরিক্ত ডাটা যোগ করা (অথেনটিকেশনের জন্য)
+                const empName = formData.get('collector');
+                formData.append("EmployeeName", empName);
+                formData.append("SecretCode", secretCode);
+
+                // বর্তমান সময় যোগ করা (নিবন্ধন সময় হিসেবে)
+                const now = TimeFormatter.nowForInput();
+                formData.append("entryTime", TimeFormatter.formatForSheet(now));
+
+                try {
+                    const response = await universalPostRequest(formData);
+                    
+                    if (response.status === "success") {
+                        alert("সফল: " + response.message);
+                        form.reset();
+                    } else {
+                        alert("ব্যর্থ: " + response.message);
+                    }
+                } catch (error) {
+                    alert("Error: " + error.message);
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

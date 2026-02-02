@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Transaction</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f7f6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Tab Design */
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            padding: 10px 25px;
+            cursor: pointer;
+            border: none;
+            background: #eee;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active {
+            background: #007bff;
+            color: #fff;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #ddd;
+        }
+
+        /* Form Sections */
+        .form-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Member Transactions</h2>
+
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="switchTab('receiptTab')">Post Member Receipt (আয়)</button>
+            <button class="tab-btn" onclick="switchTab('voucherTab')">Post Member Voucher (ব্যয়)</button>
+        </div>
+
+        <div id="receiptTab" class="form-section active">
+            <form id="receiptForm">
+                <input type="hidden" name="action" value="addMemberReceipt">
+                <div class="form-group">
+                    <label>তারিখ ও সময়</label>
+                    <input type="datetime-local" name="dateTime" id="receiptDateTime" step="1" required
+                        onchange="handleDateChange('receipt')">
+                </div>
+
+                <div class="form-group">
+                    <label>রশিদ নং</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="number" name="receiptNo" id="receiptNo" required placeholder="Auto Generating...">
+                        <button type="button" onclick="handleDateChange('receipt')"
+                            style="padding: 0 10px; cursor: pointer;">↻</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>সদস্য নং</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="number" name="memberNo" id="memberNo" step="1" required>
+                        <button type="button" onclick="handleMemberChange('receipt')"
+                            style="padding: 0 10px; cursor: pointer;">Find_Member</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label> সদস্যের নাম </label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" name="memberName" id="memberName" required placeholder="Auto Generating..."
+                            readonly>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label> শেয়ার জমা </label>
+                    <input type="number" name="shareDeposit" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label> শেয়ার জরিমানা </label>
+                    <input type="number" name="sharePenalty" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label> সঞ্চয় জমা </label>
+                    <input type="number" name="savingsDeposit" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label> সঞ্চয় জরিমানা </label>
+                    <input type="number" name="savingsPenalty" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label> ঋণ ফেরত </label>
+                    <input type="number" name="loanRepayment" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label> ঋণ মুনাফা/সেবামূল্য </label>
+                    <input type="number" name="loanInterestRepayment" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label> ঋণ জরিমানা </label>
+                    <input type="number" name="loanPenalty" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label>প্রদানকারী (নাম)</label>
+                    <input type="text" name="provider" required placeholder="যে টাকা দিচ্ছে">
+                </div>
+
+                <div class="form-group">
+                    <label>আদায়কারী (Employee)</label>
+                    <input type="text" name="collector" list="empList" required placeholder="Employee Name Select করুন">
+                </div>
+
+                <div class="form-group">
+                    <label>বিবরণ</label>
+                    <textarea name="description" rows="2" required placeholder="বিবরণ লিখুন..."></textarea>
+                </div>
+
+                <button type="button" class="submit-btn" onclick="submitData('receiptForm')">Submit Receipt</button>
+            </form>
+        </div>
+
+        <div id="voucherTab" class="form-section">
+            <form id="voucherForm">
+                <input type="hidden" name="action" value="addMemberVoucher">
+
+                <div class="form-group">
+                    <label>তারিখ ও সময়</label>
+                    <input type="datetime-local" name="dateTime" id="voucherDateTime" step="1" required
+                        onchange="handleDateChange('voucher')">
+                </div>
+
+                <div class="form-group">
+                    <label>ভাউচার নং</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="number" name="voucherNo" id="voucherNo" required placeholder="Auto Generating...">
+                        <button type="button" onclick="handleDateChange('voucher')"
+                            style="padding: 0 10px; cursor: pointer;">↻</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>সদস্য নং</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="number" name="memberNo" id="memberNo" step="1" required>
+                        <button type="button" onclick="handleMemberChange('voucher')"
+                            style="padding: 0 10px; cursor: pointer;">Find_Member</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label> সদস্যের নাম </label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" name="memberName" id="memberName" required placeholder="Auto Generating..."
+                            readonly>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>শেয়ার ফেরৎ</label>
+                    <input type="number" name="shareWithdraw" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label>সঞ্চয় উত্তোলন</label>
+                    <input type="number" name="savingsWithdraw" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label>ঋণ উত্তোলন</label>
+                    <input type="number" name="newLoan" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label>প্রদানকারী (Employee)</label>
+                    <input type="text" name="provider" list="empList" required placeholder="Employee Name Select করুন">
+                </div>
+
+                <div class="form-group">
+                    <label>আদায়কারী (নাম)</label>
+                    <input type="text" name="collector" required placeholder="যে টাকা নিচ্ছে">
+                </div>
+
+                <div class="form-group">
+                    <label>বিবরণ</label>
+                    <textarea name="description" rows="2" required placeholder="বিবরণ লিখুন..."></textarea>
+                </div>
+
+                <button type="button" class="submit-btn" onclick="submitData('voucherForm')">Submit Voucher</button>
+            </form>
+        </div>
+    </div>
+
+    <datalist id="empList"></datalist>
+
+    <script src="timeFormat.js"></script>
+    <script src="modalBox.js"></script>
+    <script src="API.js"></script>
+    <script src="postRequest.js"></script>
+    <script src="getRequest.js"></script>
+    <script src="getEmployee.js"></script>
+    <script src="handleMemberChange.js"></script>
+
+    <script>
+        // --- Initialization ---
+        window.onload = function () {
+            loadEmployees();
+            setCurrentTime();
+        };
+
+        function setCurrentTime() {
+            if (typeof TimeFormatter !== 'undefined') {
+                const now = TimeFormatter.nowForInput();
+                document.getElementById('receiptDateTime').value = now;
+                document.getElementById('voucherDateTime').value = now;
+                // সময় সেট হওয়ার পর অটোমেটিক নম্বর জেনারেট কল হবে
+                handleDateChange('receipt');
+                handleDateChange('voucher');
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            // Find the button that called this function based on text content logic or passed 'this'
+            // Simplified: Just loop and match text or use onclick 'this' in HTML. 
+            // Since I hardcoded onclick, let's fix the button active state visually:
+            const buttons = document.querySelectorAll('.tab-btn');
+            if (tabId === 'receiptTab') buttons[0].classList.add('active');
+            else buttons[1].classList.add('active');
+        }
+
+        // --- 1. Load Employees for Datalist ---
+        async function loadEmployees() {
+            const employees = await fetchEmployeeNames();
+
+            if (employees && employees.length > 0) {
+                const list = document.getElementById('empList');
+                list.innerHTML = ''; // আগের ডাটা ক্লিয়ার করা
+
+                employees.forEach(name => {
+                    let opt = document.createElement('option');
+                    opt.value = name;
+                    list.appendChild(opt);
+                });
+            }
+        }
+
+        // --- 2. Auto Generate ID (Using universalGetRequest) ---
+        async function handleDateChange(type) {
+            const dateInput = document.getElementById(`${type}DateTime`).value;
+            if (!dateInput) return;
+
+            const monthKey = TimeFormatter.getMonthKey(dateInput); // yyyy-MM
+            const idField = document.getElementById(`${type}No`);
+
+            idField.value = ""; // আগের ভ্যালু ক্লিয়ার
+            idField.placeholder = "Loading...";
+
+            // অ্যাকশন নির্ধারণ
+            const action = type === 'receipt' ? 'getLastMemberReceiptNo' : 'getLastMemberVoucherNo';
+
+            try {
+                // params অবজেক্টে ফিল্টার ডাটা পাঠানো
+                const result = await universalGetRequest(action, { month: monthKey });
+
+                if (result.status === "success") {
+                    const lastNo = parseInt(result.data) || 0;
+                    idField.value = lastNo + 1; // Auto increment
+                } else {
+                    idField.value = 1; // নতুন মাসের জন্য ১ থেকে শুরু
+                    console.log("No previous record found, starting from 1");
+                }
+            } catch (e) {
+                console.error("ID Fetch Error", e);
+                idField.value = 1;
+            }
+        }
+
+        // --- 3. Submission Handler ---
+        function submitData(formId) {
+            openModal(async (secretCode) => {
+
+                const form = document.getElementById(formId);
+                const formData = new FormData(form);
+
+                console.log("Before :-");
+                console.log(formData);
+                // --- Data Preparation ---
+                const rawTime = formData.get('dateTime');
+
+                // A. Time Format for Sheet
+                formData.set('dateTime', TimeFormatter.formatForSheet(rawTime));
+
+                // B. Month Key for Backend File Finding
+                formData.append('month', TimeFormatter.getMonthKey(rawTime));
+
+                // C. Secret Code & Employee Name Auth
+                // Receipt Form এ 'collector' হলো Employee, Voucher Form এ 'provider' হলো Employee
+                const empNameKey = formId === 'receiptForm' ? 'collector' : 'provider';
+                const empName = formData.get(empNameKey);
+
+                formData.append("EmployeeName", empName);
+                formData.append("SecretCode", secretCode);
+
+                console.log("After :-");
+                console.log(formData);
+                try {
+                    const response = await universalPostRequest(formData);
+                    console.log("Send Data :-");
+                    console.log(formData);
+                    alert(response.message);
+
+                    if (response.status === "success") {
+                        form.reset();
+                        setCurrentTime(); // Reset time & regenerate ID
+                    }
+                } catch (error) {
+                    alert("Submission Failed: " + error.message);
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>

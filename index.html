@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Management Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .menu-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 5px solid transparent;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            border-bottom: 5px solid var(--accent-color);
+        }
+
+        .menu-card i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .menu-card h3 {
+            margin: 10px 0;
+            font-size: 1.4rem;
+        }
+
+        .menu-card p {
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            .header h1 { font-size: 1.5rem; }
+            .menu-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Management System Dashboard</h1>
+        <p>সহজে আপনার ব্যবসায়িক হিসাব পরিচালনা করুন</p>
+    </div>
+
+    <div class="container">
+        <div class="menu-grid">
+            
+            <a href="member.html" class="menu-card">
+                <i class="fas fa-users"></i>
+                <h3>সদস্য তালিকা</h3>
+                <p>নতুন সদস্য যোগ করুন এবং প্রোফাইল দেখুন</p>
+            </a>
+
+            <a href="memberTransaction.html" class="menu-card">
+                <i class="fas fa-exchange-alt"></i>
+                <h3>সদস্য লেনদেন</h3>
+                <p>জমা, শেয়ার এবং ঋণের লেনদেন পরিচালনা করুন</p>
+            </a>
+
+            <a href="products.html" class="menu-card">
+                <i class="fas fa-boxes"></i>
+                <h3>প্রোডাক্টস তালিকা</h3>
+                <p>স্টক এবং পণ্যের বিস্তারিত তথ্য</p>
+            </a>
+
+            <a href="productsTransactions.html" class="menu-card">
+                <i class="fas fa-exchange-alt"></i>
+                <h3>প্রোডাক্টস লেনদেন</h3>
+                <p>পণ্যের কেনা-বেচার হিসাব রেকর্ড করুন</p>
+            </a>
+
+            <a href="others.html" class="menu-card">
+                <i class="fas fa-folder-plus"></i>
+                <h3>অন্যান্য</h3>
+                <p>অন্যান্য বিবিধ খরচ এবং আয়ের হিসাব</p>
+            </a>
+
+            <a href="reports.html" class="menu-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>রিপোর্ট ও সামারি</h3>
+                <p>মাসিক ও বার্ষিক বিস্তারিত রিপোর্ট দেখুন</p>
+            </a>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2026 Co-Operative Management | Developed By Aung Kyaw Ching
+    </div>
+
+</body>
+</html>
