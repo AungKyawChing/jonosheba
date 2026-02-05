@@ -34,7 +34,7 @@ function generateDynamicInvoice(data) {
             
             <div style="text-align:center; padding-bottom:10px; margin-bottom:15px;">
                 <h5 style="margin:0; color:#444; font-size:11px; font-weight:normal;">${data.month} ${data.sector} ${data.type}</h5>
-                <h2 style="margin:5px 0; font-size:17px; font-weight:bold;">জনসেবা কো-অপারেটিভ ক্রেডিট ইউনিয়ন লিঃ</h2>
+                <h2 style="margin:5px 0; font-size:15px; font-weight:bold;">জনসেবা কো-অপারেটিভ ক্রেডিট ইউনিয়ন লিঃ</h2>
                 <p style="font-size:10px; margin:2px;">স্থাপিত: ০১/০১/২০২১ খ্রিঃ, রেজিঃ নং ২০২৪.১.২৩.২২১৬.০৩৬৪</p>
                 <p style="font-size:10px; margin:2px;">ঠিকানা: নোয়াপাড়া ৩নং ওয়ার্ড, হারবাং, চকরিয়া, কক্সবাজার।</p>
                 <p style="font-size:10px; margin:2px;">Office: 01866-666666, E-mail: jonosheba64@gmail.com</p>
@@ -128,4 +128,5 @@ function printSingleInvoice() {
     }
         // অতিরিক্ত পেজ বা গ্যাপ রিমুভ নিশ্চিত করা
     }).save();
+
 }
