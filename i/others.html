@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Others Database View</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .btn-add {
+            text-decoration: none;
+            background: #2ecc71;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            float: right;
+        }
+
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .month-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .month-card {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        .month-card:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .data-section {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .printable-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+        }
+
+        .summary-box {
+            border: 2px solid #28a745;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-around;
+            background: #fff;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-item p {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0 0 0;
+            color: #28a745;
+        }
+
+        .expense-text {
+            color: #dc3545 !important;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 11px;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .clickable-id {
+            color: #007bff;
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-group {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .print-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="othersAdd.html" class="btn-add">+ নতুন Invoice যোগ করুন</a>
+    <h2>Others Transaction Explorer</h2>
+    <div id="statusMessage" class="loader">Loading month list...</div>
+    <div id="monthList" class="month-list"></div>
+
+    <div id="dataDisplayArea" class="data-section">
+        <div class="btn-group">
+            <button class="print-btn" onclick="handlePrint('printableArea', 'Others_Full_Report')">Full Report
+                PDF</button>
+            <button class="print-btn" onclick="handlePrint('printSummary', 'Others_Summary')">Summary PDF</button>
+            <button class="print-btn" onclick="handlePrint('printReceipts', 'Others_Receipts_List')">Receipts
+                PDF</button>
+            <button class="print-btn" onclick="handlePrint('printVouchers', 'Others_Vouchers_List')">Vouchers
+                PDF</button>
+        </div>
+
+        <div id="printableArea">
+            <div id="printSummary" class="printable-content">
+                <h2>Summary Report</h2>
+                <div class="summary-box">
+                    <div class="summary-item">
+                        <h4>সর্বমোট আয়</h4>
+                        <p id="totalIncome">0</p>
+                    </div>
+                    <div class="summary-item">
+                        <h4>সর্বমোট ব্যয়</h4>
+                        <p id="totalExpense" class="expense-text">0</p>
+                    </div>
+                    <div class="summary-item">
+                        <h4>অবশিষ্ট</h4>
+                        <p id="totalBalance">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="printReceipts" class="printable-content">
+                <h2>Others Receipts (আয়)</h2>
+                <div id="receiptsTable" class="table-container"></div>
+            </div>
+
+            <div id="printVouchers" class="printable-content">
+                <h2>Others Vouchers (ব্যয়)</h2>
+                <div id="vouchersTable" class="table-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="API.js"></script>
+    <script src="printer.js"></script>
+    <script src="invoiceGenerator.js"></script>
+
+    <script>
+        let selectedMonthName = "";
+
+        document.addEventListener('DOMContentLoaded', fetchFileList);
+
+        function fetchFileList() {
+            fetch(`${WEB_APP_URL}?action=getOthersFileList`)
+                .then(res => res.json())
+                .then(res => {
+                    if (res.status === "success") {
+                        const container = document.getElementById('monthList');
+                        container.innerHTML = "";
+                        res.data.forEach(file => {
+                            const card = document.createElement('div');
+                            card.className = 'month-card';
+                            card.innerText = file.name;
+                            card.onclick = () => fetchSheetData(file.name);
+                            container.appendChild(card);
+                        });
+                        document.getElementById('statusMessage').style.display = 'none';
+                    }
+                });
+        }
+
+        function fetchSheetData(month) {
+            selectedMonthName = month;
+            document.getElementById('statusMessage').style.display = 'block';
+            document.getElementById('dataDisplayArea').style.display = 'none';
+
+            fetch(`${WEB_APP_URL}?action=getOtherSheetData&month=${month}`)
+                .then(res => res.json())
+                .then(res => {
+                    document.getElementById('statusMessage').style.display = 'none';
+                    if (res.status === "success") {
+                        generateSummary(res.data);
+                        // টেবিল জেনারেট করার সময় অবজেক্ট ম্যাপিং লজিক পাঠানো হচ্ছে
+                        renderTable(res.data.Receipts, 'receiptsTable', 'Receipt');
+                        renderTable(res.data.Vouchers, 'vouchersTable', 'Voucher');
+                        document.getElementById('dataDisplayArea').style.display = 'block';
+                    }
+                });
+        }
+
+        function generateSummary(data) {
+            let inc = 0, exp = 0;
+            if (data.Receipts) data.Receipts.slice(1).forEach(r => inc += parseFloat(r[6]) || 0);
+            if (data.Vouchers) data.Vouchers.slice(1).forEach(v => exp += parseFloat(v[6]) || 0);
+
+            document.getElementById('totalIncome').innerText = inc.toLocaleString() + " /-";
+            document.getElementById('totalExpense').innerText = exp.toLocaleString() + " /-";
+            document.getElementById('totalBalance').innerText = (inc - exp).toLocaleString() + " /-";
+        }
+
+        function renderTable(dataArray, targetId, type) {
+            const target = document.getElementById(targetId);
+            if (!dataArray || dataArray.length < 2) { target.innerHTML = "No data."; return; }
+
+            let html = "<table><thead><tr>";
+            dataArray[0].forEach(h => html += `<th>${h}</th>`);
+            html += "</tr></thead><tbody>";
+
+            dataArray.slice(1).forEach(row => {
+                if (row[0] === "") return;
+                html += "<tr>";
+                row.forEach((cell, idx) => {
+                    if (idx === 0) {
+                        // ID তে ক্লিক করলে ইনভয়েস অবজেক্ট তৈরি হবে
+                        html += `<td class="clickable-id" onclick='prepareAndShowInvoice(${JSON.stringify(row)}, "${type}")'>${cell}</td>`;
+                    } else {
+                        html += `<td>${cell || ""}</td>`;
+                    }
+                });
+                html += "</tr>";
+            });
+            target.innerHTML = html + "</tbody></table>";
+        }
+
+        /**
+         * টেবিল রো থেকে ডাটা অবজেক্ট তৈরি করে জেনারেটরে পাঠানো
+         */
+        function prepareAndShowInvoice(row, type) {
+            // Others সেক্টরের জন্য ডেটা ম্যাপিং (আপনার শিট কলাম অনুযায়ী)
+            // কলাম ইনডেক্স: 0:SL, 1:Date, 2:Desc, 3:Payer, 4:Collector, 5:Type, 6:Amount
+            const invoiceData = {
+                type: type,                 // Receipt or Voucher
+                month: selectedMonthName,   // যেমন: জানুয়ারি ২০২৬
+                sector: "Others",           // এই ভিউতে সেক্টর ফিক্সড
+                slNo: row[0],
+                dateTime: row[1],
+                note: row[2],
+                providerName: row[3],       // লেনদেনকারীর নাম
+                collectorName: row[4],      // আদায়কারীর নাম
+                // ট্রানজ্যাকশন লিস্ট তৈরি (মাল্টিপল হতে পারে, এখানে একটিই আছে)
+                transactions: [
+                    { name: row[5], amount: row[6] }
+                ]
+            };
+
+            // রিসিট জেনারেটর কল করা
+            generateDynamicInvoice(invoiceData);
+        }
+
+        /**
+            * প্রিন্ট ফাংশন - নির্দিষ্ট ID ধরে PDF তৈরি করবে
+        */
+        function handlePrint(id, reportType) {
+            // PDF জেনারেট করার সময় হেডারগুলো সাময়িকভাবে প্রদর্শন করা
+            // const headers = document.querySelectorAll('.pdf-only-header');
+            // headers.forEach(h => h.style.display = 'block');
+
+            const fileName = `${reportType}_${selectedMonthName}.pdf`;
+
+            // printer.js এ থাকা ফাংশন কল করা
+            exportElementToPDF(id, fileName);
+
+            // প্রিন্ট কমান্ড শেষ হলে আবার লুকিয়ে ফেলা (১ সেকেন্ড পর যাতে জেনারেশনে সমস্যা না হয়)
+            // setTimeout(() => {
+            //     headers.forEach(h => h.style.display = 'none');
+            // }, 1000);
+        }
+    </script>
+</body>
+
+</html>

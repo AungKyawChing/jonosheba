@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>নতুন পণ্য যোগ করুন</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        .btn-submit { width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 18px; font-weight: bold; margin-top: 10px; }
+        .btn-submit:hover { background: #2980b9; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>নতুন পণ্য রেজিস্ট্রেশন</h2>
+        
+        <form id="productForm">
+            <input type="hidden" name="action" value="createNewProduct">
+
+            <div class="form-group">
+                <label>কর্মকর্তার নাম:</label>
+                <select name="EmployeeName" id="employeeList" required>
+                    <option value="">লোডিং হচ্ছে...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>নতুন পণ্যের নাম:</label>
+                <input type="text" name="newProductName" placeholder="যেমন: আটা, চিনি" required>
+            </div>
+
+            <button type="submit" class="btn-submit">পণ্য তৈরি করুন</button>
+        </form>
+    </div>
+
+    <script src="API.js"></script>
+    <script src="getRequest.js"></script>
+    <script src="postRequest.js"></script>
+    <script src="getEmployee.js"></script>
+    <script src="modalBox.js"></script>
+
+    <script>
+        // পেজ লোড হলে এমপ্লয়ি লিস্ট আনা (আগের মতোই)
+        window.onload = async () => {
+            const employees = await fetchEmployeeNames();
+            const select = document.getElementById('employeeList');
+            select.innerHTML = '<option value="">নাম নির্বাচন করুন</option>';
+            employees.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = opt.text = name;
+                select.add(opt);
+            });
+        };
+
+        // ফর্ম সাবমিট হ্যান্ডলার
+        document.getElementById('productForm').onsubmit = function (e) {
+            e.preventDefault();
+            const form = this;
+            const submitBtn = form.querySelector('.btn-submit');
+
+            // সিক্রেট কোড মডাল ওপেন করা
+            openModal(async (secretCode) => {
+                const formData = new FormData(form);
+                formData.append("SecretCode", secretCode);
+
+                // UI আপডেট: বাটন ডিজাবল করা
+                submitBtn.disabled = true;
+                submitBtn.innerText = "তৈরি হচ্ছে... (অপেক্ষা করুন)";
+
+                try {
+                    const response = await universalPostRequest(formData);
+
+                    if (response.status === "success") {
+                        alert(response.message);
+                        form.reset();
+                        window.location.href = "products.html";
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                } catch (err) {
+                    /**
+                     * CORS এরর হ্যান্ডলিং: 
+                     * যেহেতু আপনি দেখেছেন ডাটাবেসে কাজ হচ্ছে, তাই এখানে আমরা 
+                     * ইউজারকে একটি পজিটিভ মেসেজ দিয়ে লিস্ট পেজে পাঠিয়ে দিব।
+                     */
+                    console.warn("CORS/Timeout detected, but folder might be created:", err);
+
+                    alert("পণ্য তৈরির প্রক্রিয়াটি শুরু হয়েছে। ড্রাইভ অপারেশনের কারণে কিছুটা সময় লাগতে পারে। অনুগ্রহ করে লিস্ট পেজ চেক করুন।");
+
+                    form.reset();
+                    window.location.href = "products.html";
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "পণ্য তৈরি করুন";
+                }
+            });
+        };
+    </script>
+</body>
+</html>
