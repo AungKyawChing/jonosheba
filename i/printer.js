@@ -18,10 +18,11 @@
     // ৪. প্রিন্ট উইন্ডো ওপেন করা
     setTimeout(() => {
         window.print();
-                            // ৫. প্রিন্ট শেষে আগের অবস্থায় ফিরে যাওয়া
+    }, 2000);
+
+  // ৫. প্রিন্ট শেষে আগের অবস্থায় ফিরে যাওয়া
             setTimeout(() => {
                 document.body.innerHTML = originalContents;
                 document.title = originalTitle;
-            }, 2000);
-    }, 2000);
+            }, 15000);
 }
