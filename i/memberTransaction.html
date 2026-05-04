@@ -145,12 +145,12 @@
 
     <div id="dataDisplayArea" class="data-section">
         <div class="btn-group">
-            <button class="print-btn" onclick="handlePrint('printableArea', 'Others_Full_Report')">Full Report
+            <button class="print-btn" onclick="handlePrint('printableArea', 'Members_Full_Report')">Full Report
                 PDF</button>
-            <button class="print-btn" onclick="handlePrint('printSummary', 'Others_Summary')">Summary PDF</button>
-            <button class="print-btn" onclick="handlePrint('printReceipts', 'Others_Receipts_List')">Receipts
+            <button class="print-btn" onclick="handlePrint('printSummary', 'Members_Summary')">Summary PDF</button>
+            <button class="print-btn" onclick="handlePrint('printReceipts', 'Members_Receipts_List')">Receipts
                 PDF</button>
-            <button class="print-btn" onclick="handlePrint('printVouchers', 'Others_Vouchers_List')">Vouchers
+            <button class="print-btn" onclick="handlePrint('printVouchers', 'Members_Vouchers_List')">Vouchers
                 PDF</button>
         </div>
 
@@ -436,7 +436,8 @@
                     collectorName: row[6],
                     transactions: [
                         { name: "শেয়ার ফেরত", amount: row[7] },
-                        { name: "সঞ্চয় উত্তোলন", amount: row[8] },
+                        { name: "সঞ্চয় উত্তোলন", amount: row[8] },
+
                         { name: "ঋণদান", amount: row[9] },
                     ]
                 };
