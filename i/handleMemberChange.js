@@ -35,11 +35,11 @@ async function handleMemberChange(type) {
             if (type === 'receipt') {
                 // Receipt হলে 'provider' (প্রদানকারী) ইনপুটে নাম সেট হবে
                 const providerInput = form.querySelector('[name="provider"]');
-                if (providerInput) providerInput.value = fetchedName;
+                if (providerInput) providerInput.value = result.data;
             } else if (type === 'voucher') {
                 // Voucher হলে 'collector' (আদায়কারী) ইনপুটে নাম সেট হবে
                 const collectorInput = form.querySelector('[name="collector"]');
-                if (collectorInput) collectorInput.value = fetchedName;
+                if (collectorInput) collectorInput.value = result.data;
             }
             // --- নতুন লজিক শেষ ---
 
