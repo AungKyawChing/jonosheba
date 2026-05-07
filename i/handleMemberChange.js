@@ -28,6 +28,29 @@ async function handleMemberChange(type) {
         if (result.status === "success" && result.data) {
             memberNameInput.value = result.data; // মেম্বারের নাম সেট
             memberNameInput.style.color = "black";
+
+
+
+
+
+
+// --- নতুন লজিক শুরু (রশিদে প্রদানকারী ও ভাউচারে আদায়কারীর ইনপুট এ Auto সদস্যের নাম) ---
+            if (type === 'receipt') {
+                // Receipt হলে 'provider' (প্রদানকারী) ইনপুটে নাম সেট হবে
+                const providerInput = form.querySelector('[name="provider"]');
+                if (providerInput) providerInput.value = result.data;
+            } else if (type === 'voucher') {
+                // Voucher হলে 'collector' (আদায়কারী) ইনপুটে নাম সেট হবে
+                const collectorInput = form.querySelector('[name="collector"]');
+                if (collectorInput) collectorInput.value = result.data;
+            }
+            // --- নতুন লজিক শেষ ---
+
+
+
+
+
+
         } else {
             memberNameInput.value = "";
             alert("দুঃখিত! এই সদস্য নম্বরটি সঠিক নয় অথবা ডাটাবেসে নেই।");
