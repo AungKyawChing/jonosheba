@@ -156,7 +156,7 @@
 
         <div id="printableArea">
             <div id="printSummary" class="printable-content">
-                <h2>Summary Report</h2>
+                <h2>Summary Report <span class="selectedMonth"></span></h2>
                 <div class="summary-box">
                     <div class="summary-item">
                         <h4>সর্বমোট আয়</h4>
@@ -174,12 +174,12 @@
             </div>
 
             <div id="printReceipts" class="printable-content">
-                <h2>Others Receipts (আয়)</h2>
+                <h2>Others Receipts (আয়) <span class="selectedMonth"></span></h2>
                 <div id="receiptsTable" class="table-container"></div>
             </div>
 
             <div id="printVouchers" class="printable-content">
-                <h2>Others Vouchers (ব্যয়)</h2>
+                <h2>Others Vouchers (ব্যয়) <span class="selectedMonth"></span></h2>
                 <div id="vouchersTable" class="table-container"></div>
             </div>
         </div>
@@ -223,6 +223,12 @@
                 .then(res => {
                     document.getElementById('statusMessage').style.display = 'none';
                     if (res.status === "success") {
+                        // ---> এখানে মাসের নাম সকল .selectedMonth ক্লাসে বসানো হচ্ছে <---
+                        const monthSpans = document.querySelectorAll('.selectedMonth');
+                        monthSpans.forEach(span => {
+                            span.innerText = ` - (${selectedMonthName})`; // আপনি চাইলে ফরম্যাট পরিবর্তন করতে পারেন
+                        });
+                        
                         generateSummary(res.data);
                         // টেবিল জেনারেট করার সময় অবজেক্ট ম্যাপিং লজিক পাঠানো হচ্ছে
                         renderTable(res.data.Receipts, 'receiptsTable', 'Receipt');
