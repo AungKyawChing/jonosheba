@@ -226,12 +226,12 @@
             </div>
 
             <div id="printReceipts" class="printable-content">
-                <h2 id="h2">Member Receipts (আয়)</h2>
+                <h2 id="h2">Member Receipts (আয়) <span class="selectedMonth"></span></h2>
                 <div id="receiptsTable" class="table-container"></div>
             </div>
 
             <div id="printVouchers" class="printable-content">
-                <h2 id="h2">Member Vouchers (ব্যয়)</h2>
+                <h2 id="h2">Member Vouchers (ব্যয়) <span class="selectedMonth"></span></h2>
                 <div id="vouchersTable" class="table-container"></div>
             </div>
         </div>
@@ -289,7 +289,13 @@
 
                 document.getElementById('statusMessage').style.display = 'none';
 
-                if (res.status === "success") {
+                if (res.status === "success") 
+                    // ---> এখানে মাসের নাম সকল .selectedMonth ক্লাসে বসানো হচ্ছে <---
+                    const monthSpans = document.querySelectorAll('.selectedMonth');
+                    monthSpans.forEach(span => {
+                        span.innerText = ` - (${month})`; // আপনি চাইলে ফরম্যাট পরিবর্তন করতে পারেন
+                    });
+                
                     generateSummary(res.data);
 
                     // টেবিল রেন্ডার করা
