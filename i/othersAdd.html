@@ -170,7 +170,12 @@
 
                 <div class="form-group">
                     <label>আয়ের ধরণ</label>
-                    <input type="text" name="incomeType" required placeholder="উদা: অনুদান, ভর্তি ফি">
+                    <input type="text" name="incomeType" list="incomeTypeList" required placeholder="উদা: অনুদান, ভর্তি ফি">
+                    <datalist id="incomeTypeList">
+                        <option value="ভর্তি ফি"></option>
+                        <option value="ঋণ ফরম বিক্রি"></option>
+                        <option value="JSPS হিসাব খোলার ফি"></option>
+                    </datalist>
                 </div>
 
                 <div class="form-group">
@@ -218,7 +223,22 @@
 
                 <div class="form-group">
                     <label>ব্যয়ের ধরণ</label>
-                    <input type="text" name="expenseType" required placeholder="উদা: বিদ্যুৎ বিল, নাস্তা">
+                    <input type="text" name="expenseType" list="expenseTypeList" required placeholder="উদা: বিদ্যুৎ বিল, নাস্তা">
+                    <datalist id="expenseTypeList">
+                        <option value="অফিস ভাড়া"></option>
+                        <option value="বেতন"></option>
+                        <option value="সম্মানী ভাতা"></option>
+                        <option value="বিদ্যুৎ বিল"></option>
+                        <option value="যাতায়াত খরচ"></option>
+                        <option value="অফিস আপ্যায়ন"></option>
+                        <option value="ষ্টেশনারী খরচ "></option>
+                        <option value="মিটিং খরচ"></option>
+                        <option value="পাস বই"></option>
+                        <option value="খরচের তালিকা"></option>
+                        <option value="মেম্বারশিপ ডিউস"></option>
+                        <option value="সমবায় চাদা"></option>
+                        <option value="সমবায় অফিসের খরচ"></option>
+                    </datalist>
                 </div>
 
                 <div class="form-group">
