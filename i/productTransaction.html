@@ -69,7 +69,10 @@
 
         <div class="table-container" id="receiptsSection">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3>Receipts (জমা রিপোর্ট)</h3>
+                <h3>
+            <span class="selectedProductName"></span> জমার তালিকা
+            <span class="selectedMonthName"></span> (সংগ্রহ তালিকা)
+        </h3>
                 <button class="btn-print" onclick="handlePrint('receiptsSection', 'Receipt_Report')">Print PDF</button>
             </div>
             <table id="receiptsTable">
@@ -80,7 +83,10 @@
 
         <div class="table-container" id="vouchersSection">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3>Vouchers (উত্তোলন রিপোর্ট)</h3>
+                <h3>
+            <span class="selectedProductName"></span> উত্তোলন তালিকা
+            <span class="selectedMonthName"></span> (খরচের তালিকা)
+        </h3>
                 <button class="btn-print" onclick="handlePrint('vouchersSection', 'Voucher_Report')">Print PDF</button>
             </div>
             <table id="vouchersTable">
@@ -145,6 +151,14 @@
 
                 if (res.status === "success") {
                     document.getElementById('dataDisplay').style.display = 'block';
+
+// ---> এখানে প্রডাক্টের নাম এবং মাসের নাম HTML-এ বসানো হচ্ছে <---
+                    const prodNameSpan = document.querySelector('.selectedProductName');
+                    const monthNameSpan = document.querySelector('.selectedMonthName');
+                    
+                    if(prodNameSpan) prodNameSpan.innerText = productName;
+                    if(monthNameSpan) monthNameSpan.innerText = month;
+
                     generateSummary(res.data);
                     renderTable(res.data.Receipts, 'receiptsTable', 'Receipt');
                     renderTable(res.data.Vouchers, 'vouchersTable', 'Voucher');
