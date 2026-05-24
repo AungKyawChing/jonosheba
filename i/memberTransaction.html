@@ -289,11 +289,11 @@
 
                 document.getElementById('statusMessage').style.display = 'none';
 
-                if (res.status === "success") 
+                if (res.status === "success") {
                     // ---> এখানে মাসের নাম সকল .selectedMonth ক্লাসে বসানো হচ্ছে <---
-                    var monthSpans = document.querySelectorAll('.selectedMonth');
+                    const monthSpans = document.querySelectorAll('.selectedMonth');
                     monthSpans.forEach(span => {
-                        span.innerText = ` - (${month})`; // আপনি চাইলে ফরম্যাট পরিবর্তন করতে পারেন
+                        span.innerText = ` - (${selectedMonthName})`; // আপনি চাইলে ফরম্যাট পরিবর্তন করতে পারেন
                     });
                 
                     generateSummary(res.data);
