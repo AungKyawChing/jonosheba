@@ -291,7 +291,7 @@
 
                 if (res.status === "success") 
                     // ---> এখানে মাসের নাম সকল .selectedMonth ক্লাসে বসানো হচ্ছে <---
-                    const monthSpans = document.querySelectorAll('.selectedMonth');
+                    var monthSpans = document.querySelectorAll('.selectedMonth');
                     monthSpans.forEach(span => {
                         span.innerText = ` - (${month})`; // আপনি চাইলে ফরম্যাট পরিবর্তন করতে পারেন
                     });
