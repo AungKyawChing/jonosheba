@@ -153,11 +153,19 @@
                     document.getElementById('dataDisplay').style.display = 'block';
 
 // ---> এখানে প্রডাক্টের নাম এবং মাসের নাম HTML-এ বসানো হচ্ছে <---
-                    const prodNameSpan = document.querySelector('.selectedProductName');
-                    const monthNameSpan = document.querySelector('.selectedMonthName');
+                    // ---> querySelectorAll ব্যবহার করে পেজের সকল একই ক্লাসের এলিমেন্ট নেওয়া হলো <---
+                    const prodNameSpans = document.querySelectorAll('.selectedProductName');
+                    const monthNameSpans = document.querySelectorAll('.selectedMonthName');
                     
-                    if(prodNameSpan) prodNameSpan.innerText = productName;
-                    if(monthNameSpan) monthNameSpan.innerText = month;
+                    // লুপ চালিয়ে সবকটি 'selectedProductName' ক্লাসে প্রডাক্টের নাম বসানো হচ্ছে
+                    prodNameSpans.forEach(span => {
+                        span.innerText = productName;
+                    });
+
+                    // লুপ চালিয়ে সবকটি 'selectedMonthName' ক্লাসে মাসের নাম বসানো হচ্ছে
+                    monthNameSpans.forEach(span => {
+                        span.innerText = ` - (${month})`;
+                    });
 
                     generateSummary(res.data);
                     renderTable(res.data.Receipts, 'receiptsTable', 'Receipt');
